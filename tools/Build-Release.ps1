@@ -198,12 +198,19 @@ try {
     $zipArchive = $null
     try {
         $zipArchive = [IO.Compression.ZipFile]::Open($temporaryZip, [IO.Compression.ZipArchiveMode]::Create)
+        $fixedDate = [DateTime]::new(2022, 1, 1, 0, 0, 0, [DateTimeKind]::Utc)
         foreach ($file in (Get-ChildItem -LiteralPath $staging -File -Recurse -Force)) {
+            $file.LastWriteTimeUtc = $fixedDate
+            $file.CreationTimeUtc = $fixedDate
+        }
+        foreach ($file in (Get-ChildItem -LiteralPath $staging -File -Recurse -Force | Sort-Object FullName)) {
             $relativeEntry = $file.FullName.Substring($staging.Length + 1).Replace([IO.Path]::DirectorySeparatorChar, '/')
             $entryName = '{0}/{1}' -f $releaseName, $relativeEntry
-            [void][IO.Compression.ZipFileExtensions]::CreateEntryFromFile(
-                $zipArchive, $file.FullName, $entryName, [IO.Compression.CompressionLevel]::Optimal
-            )
+            $entry = $zipArchive.CreateEntry($entryName, [IO.Compression.CompressionLevel]::Optimal)
+            $entry.LastWriteTime = [DateTimeOffset]::new($fixedDate)
+            $src = [IO.File]::OpenRead($file.FullName)
+            $dst = $entry.Open()
+            try { $src.CopyTo($dst) } finally { $dst.Dispose(); $src.Dispose() }
         }
     } finally {
         if ($zipArchive) { $zipArchive.Dispose() }

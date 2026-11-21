@@ -647,13 +647,22 @@ function Install-ZapretUpdate {
         $hash = (Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash.ToUpperInvariant()
         if ($hash -ne $Manifest.Sha256.ToUpperInvariant()) {
             Write-Log "Update sha mismatch: manifest=$($Manifest.Sha256) file=$hash url=$($Manifest.ZipUrl)" 'WARN'
-            # fallback: try SHA256SUMS.txt next to release (in case manifest lagged)
+            # fallback: CI пересобирает ZIP с детерминированными таймстампами — хеш отличается от локального.
+            # SHA256SUMS.txt рядом с релизом — истина. Если файл совпал с ним, считаем манифест устаревшим.
             try {
                 $sumsUrl = ($Manifest.ZipUrl -replace '[^/]+\.zip$','SHA256SUMS.txt')
                 $sumsFile = Join-Path $workDir 'SHA256SUMS.txt.remote'
                 if (Invoke-Download -Url $sumsUrl -OutFile $sumsFile -TimeoutSec 30 -NoLog) {
-                    $remote = (Get-Content $sumsFile -Raw | Select-String -Pattern '([A-Fa-f0-9]{64})').Matches[0].Groups[1].Value.ToUpperInvariant()
-                    if ($remote -and $remote -eq $hash) { Write-Log "Update sha fallback matched SHA256SUMS.txt" 'WARN'; $hash = $remote }
+                    $remoteLine = (Get-Content $sumsFile -Raw)
+                    $m = [regex]::Match($remoteLine, '([A-Fa-f0-9]{64})')
+                    if ($m.Success) {
+                        $remote = $m.Groups[1].Value.ToUpperInvariant()
+                        if ($remote -and $remote -eq $hash) {
+                            Write-Log "Update sha fallback matched SHA256SUMS.txt (manifest stale, using SHA256SUMS.txt)" 'WARN'
+                            Write-Host '  [i]  Манифест устарел, но SHA256SUMS.txt совпал — продолжаю установку.' -ForegroundColor Cyan
+                            $Manifest.Sha256 = $remote
+                        }
+                    }
                 }
             } catch { }
             if ($hash -ne $Manifest.Sha256.ToUpperInvariant()) {

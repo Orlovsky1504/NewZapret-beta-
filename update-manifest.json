@@ -1,9 +1,9 @@
 {
-  "version": "3.0.15",
+  "version": "3.0.16",
   "published": "2026-11-21",
-  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.15/zapret-discord-youtube-3.0.15.zip",
-  "sha256": "a07e2d1ea108143b5d82c792dd86489a2793b834a8ae697d23def6501f0ea78c",
+  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.16/zapret-discord-youtube-3.0.16.zip",
+  "sha256": "3e7555146a5e52e7e45d8b229f1fa4f537febe5ed34d8151770a5fe327685c99",
   "notes": [
-    "Мобильные пресеты Йота + бейдж (хаос)"
+    "Фикс SHA fallback + детерминированный ZIP"
   ]
 }
