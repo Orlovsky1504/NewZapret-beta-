@@ -15,12 +15,12 @@
 <br/>
 <br/>
 
-[![Версия](https://img.shields.io/badge/версия-2.9.6-4F7DF3?style=for-the-badge)](https://github.com/Orlovsky1504/NewZapret-beta-/releases/download/v2.9.6/zapret-discord-youtube-2.9.6.zip)
+[![Версия](https://img.shields.io/badge/версия-2.9.7-4F7DF3?style=for-the-badge)](https://github.com/Orlovsky1504/NewZapret-beta-/releases/download/v2.9.7/zapret-discord-youtube-2.9.7.zip)
 [![Open Source](https://img.shields.io/badge/open--source-да-51D6A5?style=for-the-badge)](#-открытый-код)
 [![Платформа](https://img.shields.io/badge/platform-Windows%2010%2F11-91A0B8?style=for-the-badge)](#-установка)
 [![Тесты](https://img.shields.io/badge/тестов-857-F5B95F?style=for-the-badge)](#-для-разработчиков)
 
-[⬇️ Скачать](https://github.com/Orlovsky1504/NewZapret-beta-/releases/download/v2.9.6/zapret-discord-youtube-2.9.6.zip) · [📦 Все релизы](https://github.com/Orlovsky1504/NewZapret-beta-/releases) · [🚀 Установка](#-установка) · [🔄 Автообновления](#-автообновления) · [💙 Открытый код](#-открытый-код)
+[⬇️ Скачать](https://github.com/Orlovsky1504/NewZapret-beta-/releases/download/v2.9.7/zapret-discord-youtube-2.9.7.zip) · [📦 Все релизы](https://github.com/Orlovsky1504/NewZapret-beta-/releases) · [🚀 Установка](#-установка) · [🔄 Автообновления](#-автообновления) · [💙 Открытый код](#-открытый-код)
 
 </div>
 
@@ -46,7 +46,7 @@
 
 ## 🚀 Установка
 
-1. **Скачай** [последний архив](https://github.com/Orlovsky1504/NewZapret-beta-/releases/download/v2.9.6/zapret-discord-youtube-2.9.6.zip)
+1. **Скачай** [последний архив](https://github.com/Orlovsky1504/NewZapret-beta-/releases/download/v2.9.7/zapret-discord-youtube-2.9.7.zip)
 2. **Распакуй** в любую папку (например `C:\zapret`) — *не в «Загрузки» и не на рабочий стол системы*
 3. **Запусти `Zapret-Control.exe`** и подтверди права администратора — они нужны для управления обходом
 4. Нажми **«Автонастройка»** — мастер сам подберёт стратегию и всё настроит
