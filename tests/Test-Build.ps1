@@ -706,7 +706,7 @@ Check 'stopped services are not reported as conflicts' (@($conflictMockReport.It
 Check 'panel explains SNI blocking when transfers pass but endpoints time out' ($controlPanelText.Contains('DPI блокирует их по SNI') -and $controlPanelText.Contains('перебирает только 4 узкие стратегии'))
 Check 'console verdict explains SNI blocking when transfers pass but endpoints time out' ($autoSelectBody.Contains('похожи на блокировку по SNI'))
 Remove-Item -LiteralPath $conflictTestRoot -Recurse -Force -ErrorAction SilentlyContinue
-if ($zapretModuleForMocks) { Import-Module -Name $zapretModuleForMocks.Path -Force }
+if ($zapretModuleForMocks) { Import-Module -Name $zapretModuleForMocks.Path -Force; $zapretModuleForMocks = Get-Module -Name Zapret }
 Check 'CLI exposes -CheckFreeze for auto-select' ($zapretPs1.Contains('[switch]$CheckFreeze') -and $zapretPs1.Contains('-CheckFreeze:$CheckFreeze'))
 
 $freezeRank = Select-BestStrategy -Results @(
@@ -1395,7 +1395,7 @@ try {
     $expectedVersion = [IO.File]::ReadAllText((Join-Path $repoRoot '.service/version.txt')).Trim()
     Check 'smoke: version prints the local version'   ($out -match [regex]::Escape($expectedVersion))
     $out = & $smoke @('export-strategy', 'general')
-    $shareMatch = [regex]::Match($out, '(?m)^zapret1:[A-Za-z0-9+/]+={0,2}\r?$')
+    $shareMatch = [regex]::Match($out, '(?m)^zapret1:[A-Za-z0-9+/]+={0,2}(?=\r?$)')
     Check 'smoke: export-strategy emits a share code' ($shareMatch.Success)
     if ($shareMatch.Success) {
         $out = & $smoke @('import-strategy', $shareMatch.Value, '-NewId', 'cli-shared')
@@ -1946,9 +1946,9 @@ Write-Host '== Same-folder updater ==' -ForegroundColor Cyan
 
 # --- полная остановка обхода и конфликтующие VPN/прокси-клиенты (Happ/Xray/Clash) ---
 $fullStopGuard = $false
-& $zapretModuleForMocks { $script:__savedOnWindows = $script:OnWindows; $script:OnWindows = $false }
+& (Get-Module -Name Zapret) { $script:__savedOnWindows = $script:OnWindows; $script:OnWindows = $false }
 try { [void](Stop-ZapretServiceRobust) } catch { $fullStopGuard = ($_.Exception.Message -match 'Windows') }
-& $zapretModuleForMocks { $script:OnWindows = $script:__savedOnWindows }
+& (Get-Module -Name Zapret) { $script:OnWindows = $script:__savedOnWindows }
 Check 'full stop exists and refuses non-Windows hosts' $fullStopGuard
 $strategiesTextAll = [IO.File]::ReadAllText((Join-Path $repoRoot 'src\parts\Zapret.Strategies.ps1'))
 Check 'full stop falls back to killing winws when the service ignores stop' ($strategiesTextAll -match 'function Stop-ZapretServiceRobust' -and $strategiesTextAll -match "Stop-Service -Name 'zapret'" -and $strategiesTextAll -match 'Wait-ZapretServiceState' -and $strategiesTextAll -match 'Stop-ZapretOwnedDrivers')
@@ -2003,9 +2003,9 @@ $manifestFromFeed = Get-ZapretUpdateManifest -Url $fileFeed
 Check 'update manifest: file feed downloads and validates' ($manifestFromFeed.Ok -and $manifestFromFeed.Manifest.Version -eq '2.9.1')
 Remove-Item -LiteralPath $manifestFile -Force -ErrorAction SilentlyContinue
 
-& $zapretModuleForMocks { $script:__savedOnWindows = $script:OnWindows; $script:OnWindows = $false }
+& (Get-Module -Name Zapret) { $script:__savedOnWindows = $script:OnWindows; $script:OnWindows = $false }
 $winOnlyInstall = Install-ZapretUpdate -Manifest $goodManifest.Manifest
-& $zapretModuleForMocks { $script:OnWindows = $script:__savedOnWindows }
+& (Get-Module -Name Zapret) { $script:OnWindows = $script:__savedOnWindows }
 Check 'update install: refuses to run outside Windows' (-not $winOnlyInstall.Ok -and $winOnlyInstall.Error -match 'Windows')
 
 $updaterTextAll = [IO.File]::ReadAllText((Join-Path $repoRoot 'Update-Zapret.ps1'))
