@@ -1,8 +1,8 @@
 IDI_APPICON ICON "../Zapret-Control.ico"
 
 1 VERSIONINFO
- FILEVERSION 2,9,4,0
- PRODUCTVERSION 2,9,4,0
+ FILEVERSION 2,9,5,0
+ PRODUCTVERSION 2,9,5,0
  FILEFLAGSMASK 0x3fL
  FILEFLAGS 0x0L
  FILEOS 0x40004L
@@ -15,12 +15,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "zapret-discord-youtube"
             VALUE "FileDescription", "Zapret Control"
-            VALUE "FileVersion", "2.9.4.0"
+            VALUE "FileVersion", "2.9.5.0"
             VALUE "InternalName", "Zapret-Control"
             VALUE "LegalCopyright", "MIT License"
             VALUE "OriginalFilename", "Zapret-Control.exe"
             VALUE "ProductName", "Zapret Control"
-            VALUE "ProductVersion", "2.9.4.0"
+            VALUE "ProductVersion", "2.9.5.0"
         END
     END
     BLOCK "VarFileInfo"

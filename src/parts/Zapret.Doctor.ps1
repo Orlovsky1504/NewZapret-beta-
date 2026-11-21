@@ -202,14 +202,17 @@ function Invoke-ZapretDoctor {
     # 5. Stale WinDivert driver services (the 177 exit-code family).
     if ($script:OnWindows) {
         $stale = New-Object 'System.Collections.Generic.List[string]'
+        $staleProbeError = $null
         try {
             $sc = Get-WindowsSystemToolPath -Name 'sc.exe'
             foreach ($svc in @('WinDivert', 'WinDivert14')) {
                 $out = & $sc query $svc 2>&1 | Out-String
                 if ($out -match 'STATE\s*:\s*\d+\s+(RUNNING|STOPPED|START_PENDING|STOP_PENDING)') { $stale.Add($svc) }
             }
-        } catch { }
-        if ($stale.Count -eq 0) {
+        } catch { $staleProbeError = $_.Exception.Message }
+        if ($staleProbeError) {
+            & $add 'warn' 'Службы WinDivert' ('не удалось проверить: {0}' -f $staleProbeError)
+        } elseif ($stale.Count -eq 0) {
             & $add 'ok' 'Службы WinDivert' 'устаревших служб драйвера нет'
         } else {
             if ($Fix) {
@@ -237,6 +240,8 @@ function Invoke-ZapretDoctor {
                 & $add 'warn' 'Служба обхода' 'служба отчитывается о работе, но процесс winws не найден — нажмите «Включить обход» заново'
             } elseif ($info.State -ne 'RUNNING' -and -not $info.WinwsRunning) {
                 & $add 'warn' 'Служба обхода' 'служба установлена, но не запущена — кнопка «Включить обход»'
+            } elseif ($info.State -ne 'RUNNING' -and $info.WinwsRunning) {
+                & $add 'warn' 'Служба обхода' 'процесс winws работает без службы (осиротевший процесс)'
             } else {
                 & $add 'ok' 'Служба обхода' 'служба и процесс winws согласованы'
             }

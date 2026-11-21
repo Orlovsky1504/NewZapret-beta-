@@ -14,7 +14,7 @@ function Get-WatchdogStatePath {
 function Get-WatchdogState {
     # Returns a normalized state object; missing fields fall back to defaults so
     # StrictMode never trips over an older or hand-edited state file.
-    $defaults = @{ ConsecutiveFailures = 0; LastCheckUtc = ''; LastResult = ''; LastAction = ''; LastHealUtc = ''; FallbackTried = '' }
+    $defaults = @{ ConsecutiveFailures = 0; LastCheckUtc = ''; LastResult = ''; LastAction = ''; LastHealUtc = ''; FallbackTried = ''; IntervalHours = 4 }
     $state = @{}
     foreach ($k in $defaults.Keys) { $state[$k] = $defaults[$k] }
     $path = Get-WatchdogStatePath
@@ -35,7 +35,13 @@ function Save-WatchdogState {
     $path = Get-WatchdogStatePath
     $dir = Split-Path -Parent $path
     if (-not (Test-Path -LiteralPath $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
-    ($State | ConvertTo-Json) | Set-Content -LiteralPath $path -Encoding UTF8
+    $merged = @{}
+    try {
+        $current = Get-WatchdogState
+        foreach ($prop in $current.PSObject.Properties) { $merged[$prop.Name] = $prop.Value }
+    } catch { }
+    foreach ($k in $State.Keys) { $merged[$k] = $State[$k] }
+    ($merged | ConvertTo-Json) | Set-Content -LiteralPath $path -Encoding UTF8
 }
 
 function Get-WatchdogDecision {
@@ -57,7 +63,8 @@ function Get-WatchdogDecision {
         [int]$CooldownMinutes = 30
     )
     if ($TotalCount -le 0) { return 'skip' }
-    if ($PassedCount -ge ($TotalCount - 1)) { return 'healthy' }
+    if ($PassedCount -ge $TotalCount) { return 'healthy' }
+    if (($TotalCount -ge 2) -and ($PassedCount -ge ($TotalCount - 1))) { return 'healthy' }
     if (-not $CanHeal) { return 'skip' }
     if ($PreviousFailures -lt 1) { return 'transient' }
     if (($NowUtc - $LastHealUtc).TotalMinutes -lt $CooldownMinutes) { return 'cooldown' }
@@ -211,7 +218,7 @@ function Invoke-WatchdogCheck {
     } catch { }
     $nowIso = ([datetime]::UtcNow).ToString('o', [Globalization.CultureInfo]::InvariantCulture)
     $decision = Get-WatchdogDecision -PassedCount $probe.Passed -TotalCount $probe.Total -CanHeal (Get-WatchdogCanHeal) -PreviousFailures ([int]$state.ConsecutiveFailures) -LastHealUtc $lastHeal
-    Write-Log ("Watchdog check: {0}/{1} endpoints -> {2}" -f $probe.Passed, $probe.Total, $decision)
+    Write-Log ("Watchdog check: {0}/{1} endpoints -> {2} ({3})" -f $probe.Passed, $probe.Total, $decision, $(if ($Scheduled) { 'scheduled' } else { 'manual' }))
 
     $failures = [int]$state.ConsecutiveFailures
     $action = 'ok'
@@ -341,6 +348,7 @@ function Set-WatchdogSchedule {
     $tr = Get-WatchdogTaskArguments -PowerShellPath $psExe -ScriptPath $scriptPath
     & (Get-WindowsSystemToolPath -Name 'schtasks.exe') /Create /TN $script:WatchdogTaskName /TR $tr /SC HOURLY /MO $IntervalHours /RU SYSTEM /RL HIGHEST /F 2>$null | Out-Null
     if ($LASTEXITCODE -ne 0) { throw 'schtasks could not create the watchdog task (run as Administrator).' }
+    Save-WatchdogState @{ IntervalHours = $IntervalHours }
     Write-Ok ("Автозащита включена: проверка обхода каждые {0} ч от имени SYSTEM." -f $IntervalHours)
     Write-Info2 'При двух подряд сбоях запускается автоподбор; служба переключается только на полностью подтверждённую стратегию.'
     Write-Log ("Watchdog schedule enabled (every {0}h)" -f $IntervalHours)
@@ -365,7 +373,7 @@ function Get-WatchdogStatusText {
     $state = Get-WatchdogState
     $enabled = Test-WatchdogSchedule
     $parts = New-Object 'System.Collections.Generic.List[string]'
-    if ($enabled) { $parts.Add('Автозащита включена (каждые 4 ч, SYSTEM).') } else { $parts.Add('Автозащита выключена.') }
+    if ($enabled) { $parts.Add(('Автозащита включена (каждые {0} ч, SYSTEM).' -f [int]$state.IntervalHours)) } else { $parts.Add('Автозащита выключена.') }
     if ([string]$state.LastCheckUtc) {
         $parts.Add(('Последняя проверка: {0} — {1}.' -f $state.LastCheckUtc, $state.LastResult))
     }
