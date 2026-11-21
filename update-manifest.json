@@ -2,7 +2,7 @@
   "version": "3.0.2",
   "published": "2026-11-21",
   "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.2/zapret-discord-youtube-3.0.2.zip",
-  "sha256": "ad3bf7e70b33b692dad7dd8ddf93900b1292d76046f26b04dba23aeeaf11f840",
+  "sha256": "9d66c16a3af8a7b0e4cce077cd22582b878b12f1957da0eef1c539b96c454ed1",
   "notes": [
     "Фикс сплэша: панель детектится корректно"
   ]
