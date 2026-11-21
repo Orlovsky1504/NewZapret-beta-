@@ -1,0 +1,35 @@
+name: VirusTotal Proof
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'bin/**'
+      - 'Zapret-Control.exe'
+      - 'Zapret-Tray.exe'
+      - 'tools/Capture-VirusTotal.ps1'
+      - '.github/workflows/virustotal.yml'
+
+jobs:
+  vt:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Hash + VirusTotal links (PowerShell 5.1 STA)
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          powershell -STA -NoProfile -File tools/Capture-VirusTotal.ps1 -OutDir assets/screenshots
+          dir assets/screenshots\virustotal* | Format-Table Name, Length
+          dir assets/screenshots\ci-overview.png | Format-Table Name, Length
+          cat assets/screenshots\virustotal-links.html
+      - name: Upload proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: virustotal-proof
+          path: |
+            assets/screenshots/virustotal-links.html
+            assets/screenshots/ci-overview.png
+          retention-days: 14
