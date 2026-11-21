@@ -1,0 +1,36 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "bump 3.0.18",
+      "type": "shell",
+      "command": "pwsh -File tools/Dev-Tools.ps1 bump 3.0.18",
+      "problemMatcher": []
+    },
+    {
+      "label": "build",
+      "type": "shell",
+      "command": "pwsh -File tools/Dev-Tools.ps1 build",
+      "problemMatcher": []
+    },
+    {
+      "label": "gates (9)",
+      "type": "shell",
+      "command": "pwsh -File tools/Dev-Tools.ps1 gates",
+      "problemMatcher": []
+    },
+    {
+      "label": "normalize EOL/BOM",
+      "type": "shell",
+      "command": "pwsh -File tools/Dev-Tools.ps1 normalize",
+      "problemMatcher": []
+    },
+    {
+      "label": "release-status",
+      "type": "shell",
+      "command": "pwsh -File tools/Dev-Tools.ps1 release-status",
+      "options": { "env": { "GITHUB_TOKEN": "${env:GITHUB_TOKEN}" } },
+      "problemMatcher": []
+    }
+  ]
+}
