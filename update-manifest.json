@@ -2,7 +2,7 @@
   "version": "3.0.7",
   "published": "2026-11-21",
   "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.7/zapret-discord-youtube-3.0.7.zip",
-  "sha256": "5f90403525c795e359a04d322f7b3dd71371f025ddf3f4935df6d35f6a2f7738",
+  "sha256": "87e5f8ba5caf6f7df7d655d7ec6f882ced970ecca04c128e97c795da63c69ed8",
   "notes": [
     "Фикс ApplyBest (Set-UserStrategy → Install)"
   ]
