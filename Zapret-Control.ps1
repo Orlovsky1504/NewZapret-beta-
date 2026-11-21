@@ -750,6 +750,8 @@ $script:TxtServiceState = $window.FindName('txtServiceState')
 $script:TxtServiceDetail = $window.FindName('txtServiceDetail')
 $script:TxtStrategy = $window.FindName('txtStrategy')
 $script:TxtIpState = $window.FindName('txtIpState')
+$script:TxtLogFilter = $window.FindName('txtLogFilter')
+$script:TxtWhatsNew = $window.FindName('txtWhatsNew')
 $script:TxtActivity = $window.FindName('txtActivity')
 $script:TxtToast = $window.FindName('txtToast')
 $script:TxtPageTitle = $window.FindName('txtPageTitle')
@@ -2040,6 +2042,14 @@ $window.FindName('navSites').Add_Click({ Set-ControlPage -Page sites })
 $window.FindName('navMore').Add_Click({ Set-ControlPage -Page more })
 $window.FindName('btnBackToWizard').Add_Click({ if ($script:WizardBusy) { Set-ControlPage -Page 'wizard' } })
 $window.FindName('btnWizCancel').Add_Click({ Stop-WizardRun })
+$window.FindName('btnCopyLog').Add_Click({ try { $txt=$script:TxtActivity.Text; if($txt){ [System.Windows.Clipboard]::SetText($txt); $script:TxtToast.Text='Скопировано в буфер' } } catch { Show-ControlError $_.Exception.Message } })
+$window.FindName('btnClearLog').Add_Click({ $script:ActivityEntries.Clear(); $script:ActivityEntries.Add('Журнал очищен.'); $script:TxtActivity.Text='Журнал очищен.' })
+$window.FindName('txtLogFilter').Add_TextChanged({
+    $f=$script:TxtLogFilter.Text.Trim(); if(-not $f){ $script:TxtActivity.Text=$script:ActivityEntries -join "`r`n"; return }
+    $filtered=@($script:ActivityEntries | Where-Object { $_ -like "*$f*" }); $script:TxtActivity.Text=if($filtered.Count){ $filtered -join "`r`n" } else { '(ничего не найдено)' }
+})
+$window.FindName('btnOpenReleases').Add_Click({ try { Start-Process 'https://github.com/Orlovsky1504/OpenZapret/releases' | Out-Null } catch {} })
+try { $cl=[IO.File]::ReadAllText((Join-Path $script:AppRoot 'CHANGELOG.md')); $m=[regex]::Match($cl, '(?ms)^##.*?(?=^##|\z)'); if($m.Success){ $script:TxtWhatsNew.Text=$m.Value.Substring(0,[Math]::Min(1500,$m.Value.Length)) } } catch {}
 $window.FindName('btnRefresh').Add_Click({ Refresh-ControlStatus })
 $window.FindName('btnHelp').Add_Click({ try { Show-ControlHelp } catch { Show-ControlError $_.Exception.Message } })
 $window.FindName('btnStartService').Add_Click({
