@@ -1,4 +1,4 @@
-﻿<div align="center">
+<div align="center">
 
 <img src="https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/assets/banner.png" width="100%" alt="OpenZapret — обход блокировок Discord и YouTube" />
 
@@ -46,10 +46,10 @@
 
 > Версия 2.1.27+: Telegram не проверяется и не поддерживается.
 
-> [!IMPORTANT]
-> #### 🛡️ Безопасность — проверено на VirusTotal (сгенерировано на `windows-latest`)
-> Все бинари собираются на чистой Windows в Actions из открытых исходников. Открой любой файл на VirusTotal и сверь SHA256 — совпадение = файл не подменён.
->
+> [!IMPORTANT]
+> #### 🛡️ Безопасность — проверено на VirusTotal (сгенерировано на `windows-latest`)
+> Все бинари собираются на чистой Windows в Actions из открытых исходников. Открой любой файл на VirusTotal и сверь SHA256 — совпадение = файл не подменён.
+>
 > | Файл | SHA256 | VirusTotal |
 > |---|---|---|
 > | `bin/winws.exe` | `affb4f69d2ea302a7abccd5325d81826e140ddae014f1e070bc4a6c0dd555188` | [открыть](https://www.virustotal.com/gui/file/affb4f69d2ea302a7abccd5325d81826e140ddae014f1e070bc4a6c0dd555188) |
@@ -57,10 +57,10 @@
 > | `bin/WinDivert64.sys` | `8da085332782708d8767bcace5327a6ec7283c17cfb85e40b03cd2323a90ddc2` | [открыть](https://www.virustotal.com/gui/file/8da085332782708d8767bcace5327a6ec7283c17cfb85e40b03cd2323a90ddc2) |
 > | `Zapret-Control.exe` | `c01b16d7c461705ccdf5ccec6b9089e926ae5c8a86a51368ab955bec61fa6c74` | [открыть](https://www.virustotal.com/gui/file/c01b16d7c461705ccdf5ccec6b9089e926ae5c8a86a51368ab955bec61fa6c74) |
 > | `Zapret-Tray.exe` | `b8236432a360d046dfa41ac7782089d623c2bed21057a87d7c5f69e8548c7081` | [открыть](https://www.virustotal.com/gui/file/b8236432a360d046dfa41ac7782089d623c2bed21057a87d7c5f69e8548c7081) |
-> | **ZIP 2.9.16** | `0cbc91a7806f2e6d4f138f76de975c9beb1a3db96e55ebfc3d3ae81dd9c912a1` | [открыть](https://www.virustotal.com/gui/file/0cbc91a7806f2e6d4f138f76de975c9beb1a3db96e55ebfc3d3ae81dd9c912a1) — [скачать ZIP](https://github.com/Orlovsky1504/OpenZapret/releases/download/2.9.16/zapret-discord-youtube-2.9.16.zip) |
->
-> Проверка: `certutil -hashfile bin\\winws.exe SHA256` и сравни с таблицей · Полный отчёт: [`assets/screenshots/virustotal-links.html`](https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/assets/screenshots/virustotal-links.html) (артефакт `virustotal-proof` на `windows-latest`).
->
+> | **ZIP 2.9.16** | `5e2c190e2dee5dca38f8fbcd1ccb740c676e89816fa9b0195cbc1dbc4d0603d3` | [открыть](https://www.virustotal.com/gui/file/5e2c190e2dee5dca38f8fbcd1ccb740c676e89816fa9b0195cbc1dbc4d0603d3) — [скачать ZIP](https://github.com/Orlovsky1504/OpenZapret/releases/download/2.9.16/zapret-discord-youtube-2.9.16.zip) |
+>
+> Проверка: `certutil -hashfile bin\\winws.exe SHA256` и сравни с таблицей · Полный отчёт: [`assets/screenshots/virustotal-links.html`](https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/assets/screenshots/virustotal-links.html) (артефакт `virustotal-proof` на `windows-latest`).
+>
 > <sub>Ложные 1–2/70 детекты для `winws.exe`/`WinDivert` — норма для DPI-инструментов (эвристика). Исходники `src/`+`bin/` открыты и собираются на чистой GH Windows.</sub>
 
 ## 📸 Скриншоты
