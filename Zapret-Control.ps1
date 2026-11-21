@@ -553,13 +553,19 @@ $xamlText = @'
                 <StackPanel>
                   <TextBlock Text="Диагностика и поддержка" FontSize="19" FontWeight="SemiBold" Foreground="#F4F7FC" />
                   <TextBlock Text="Проверки выполняются в окне приложения — результат в журнале действий." Foreground="#91A0B8" FontSize="12" TextWrapping="Wrap" Margin="0,7,0,18" />
+                  <TextBlock x:Name="txtDiagOneClick" Text="Нажми одну кнопку — проверит службу, драйвер, hosts и обход." Foreground="#91A0B8" FontSize="11" TextWrapping="Wrap" Margin="0,0,0,6" />
                   <WrapPanel>
-                    <Button x:Name="btnDiagnostics" Content="Диагностика" Style="{StaticResource PrimaryButton}" />
+                    <Button x:Name="btnDiagOneClick" Content="🔍 Диагностика одним кликом" Style="{StaticResource PrimaryButton}" />
+                    <Button x:Name="btnDiagnostics" Content="Диагностика" Style="{StaticResource SecondaryButton}" />
                     <Button x:Name="btnDoctor" Content="Проверка установки" Style="{StaticResource SecondaryButton}" />
                     <Button x:Name="btnDoctorFix" Content="Проверка + ремонт" Style="{StaticResource SecondaryButton}" />
+                  </WrapPanel>
+                  <WrapPanel Margin="0,8,0,0">
                     <Button x:Name="btnVoiceCheck" Content="Голос Discord: проверка и ремонт" Style="{StaticResource SecondaryButton}" />
                     <Button x:Name="btnVoiceNextFake" Content="Сменить фейк голоса (пинг 5000)" Style="{StaticResource SecondaryButton}" />
                     <Button x:Name="btnSupportBundle" Content="Отчёт для поддержки" Style="{StaticResource SecondaryButton}" />
+                  </WrapPanel>
+                  <WrapPanel Margin="0,8,0,0">
                     <Button x:Name="btnCheckUpdates" Content="Проверить обновления" Style="{StaticResource SecondaryButton}" />
                     <Button x:Name="btnToggleUpdates" Content="Автопроверка обновлений" Style="{StaticResource SecondaryButton}" />
                     <Button x:Name="btnToggleAutoInstall" Content="Автоустановка обновлений" Style="{StaticResource SecondaryButton}" />
@@ -774,6 +780,7 @@ $script:BtnTrayAutostart = $window.FindName('btnTrayAutostart')
 $script:TxtTrayAutostartState = $window.FindName('txtTrayAutostartState')
 $script:BtnWatchdogToggle = $window.FindName('btnWatchdogToggle')
 $script:TxtWatchdogState = $window.FindName('txtWatchdogState')
+$script:BtnDiagOneClick = $window.FindName('btnDiagOneClick')
 $script:BtnToggleUpdates = $window.FindName('btnToggleUpdates')
 $script:BtnToggleAutoInstall = $window.FindName('btnToggleAutoInstall')
 $script:BtnCheckUpdates = $window.FindName('btnCheckUpdates')
@@ -788,6 +795,8 @@ $script:BtnWizCancel = $window.FindName('btnWizCancel')
 $script:ChkWizFast = $window.FindName('chkWizFast')
 $script:PageStrategies = $window.FindName('pageStrategies')
 $script:PageNetwork = $window.FindName('pageNetwork')
+$script:TxtStrategyCompare = $window.FindName('txtStrategyCompare')
+$script:BtnStrategyCompareApplyBest = $window.FindName('btnStrategyCompareApplyBest')
 $script:CmbStrategyList = $window.FindName('cmbStrategyList')
 $script:TxtStrategyInfo = $window.FindName('txtStrategyInfo')
 $script:CmbDohProvider = $window.FindName('cmbDohProvider')
@@ -2279,6 +2288,15 @@ $window.FindName('btnDoctorFix').Add_Click({
         Write-Host ('Вердикт: {0}' -f $doctorReport.VerdictRu) -ForegroundColor $(if ($doctorReport.ExitCode -eq 0) { 'Green' } elseif ($doctorReport.ExitCode -eq 1) { 'Yellow' } else { 'Red' })
     }
 })
+$window.FindName('btnDiagOneClick').Add_Click({
+    Start-ControlAction -Title 'Диагностика одним кликом' -Action {
+        Write-Host '== 1/4 Служба ==' -ForegroundColor Cyan; try { $s=Get-Service -Name 'zapret' -ErrorAction SilentlyContinue; if($s){ Write-Host ('Служба zapret: '+$s.Status) -ForegroundColor $(if($s.Status -eq 'Running'){'Green'}else{'Yellow'}) } else { Write-Host 'Служба zapret не найдена' -ForegroundColor Yellow } } catch { Write-Host $_ -ForegroundColor Red }
+        Write-Host '== 2/4 Драйвер WinDivert ==' -ForegroundColor Cyan; try { $d=Get-Service -Name 'WinDivert' -ErrorAction SilentlyContinue; if($d){ Write-Host ('WinDivert: '+$d.Status) -ForegroundColor $(if($d.Status -eq 'Running'){'Green'}else{'Gray'}) } else { Write-Host 'WinDivert не установлен (ок для некоторых стратегий)' -ForegroundColor Gray } } catch { Write-Host $_ -ForegroundColor Red }
+        Write-Host '== 3/4 Проверка обхода ==' -ForegroundColor Cyan; try { Invoke-Diagnostics -NoInteractive | Out-Null } catch { Write-Host $_ -ForegroundColor Red }
+        Write-Host '== 4/4 Обновление ==' -ForegroundColor Cyan; try { $v=Get-ZapretUpdateOffer; if($v.UpdateAvailable){ Write-Host ('Доступно '+$v.Remote+' (сейчас '+$v.Local+')') -ForegroundColor Yellow } elseif($v.Error){ Write-Host $v.Error -ForegroundColor Red } else { Write-Host ('Актуально: '+$v.Local) -ForegroundColor Green } } catch { Write-Host $_ -ForegroundColor Red }
+        Write-Host '' ; Write-Host 'Готово — смотри цвета выше: зелёный ок, жёлтый/красный — действие.' -ForegroundColor Cyan
+    }
+})
 $window.FindName('btnDiagnostics').Add_Click({
     Start-ControlAction -Title 'Диагностика' -Action { Invoke-Diagnostics -NoInteractive | Out-Null }
 })
@@ -2609,11 +2627,12 @@ function Install-ControlUpdate {
     param($Offer, [switch]$Auto)
     if (-not $Offer -or -not $Offer.Manifest) { return }
     if (-not $Auto) {
-        $notes = @($Offer.Manifest.Notes | Select-Object -First 5) -join ("`n- ")
-        $noteBlock = if ($notes) { ("`n`n- {0}" -f $notes) } else { '' }
+        $notes = @($Offer.Manifest.Notes | Where-Object { $_ } | Select-Object -First 8)
+        $noteBlock = if ($notes.Count -gt 0) { ("`n`nЧто нового:`n- " + ($notes -join "`n- ")) } else { '' }
+        $noteBlock += "`n`nПодробнее: https://github.com/Orlovsky1504/OpenZapret/releases/tag/$($Offer.Remote)"
         $answer = [System.Windows.MessageBox]::Show($script:Window, (
             'Доступно обновление {0} (установлено {1}).{2}`n`nСкачать и установить сейчас? Обход будет временно остановлен; настройки, списки и стратегии сохранятся. Потребуется подтверждение администратора.' -f $Offer.Remote, $Offer.Local, $noteBlock),
-            'Обновление', [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Question)
+            'Обновление ' + $Offer.Remote, [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Question)
         if ($answer -ne [System.Windows.MessageBoxResult]::Yes) { return }
     }
     Start-ControlAction -Title ('Установка обновления {0}' -f $Offer.Remote) -Action {
@@ -2651,6 +2670,20 @@ $window.FindName('btnToggleAutoInstall').Add_Click({
     } catch { Show-ControlError $_.Exception.Message }
 })
 
+
+function Show-TrayBalloon {
+    param([string]$Title, [string]$Text)
+    try {
+        Add-Type -AssemblyName System.Windows.Forms -ErrorAction Stop
+        $ni = New-Object System.Windows.Forms.NotifyIcon
+        $ni.Icon = [System.Drawing.SystemIcons]::Information
+        $ni.Visible = $true
+        $ni.ShowBalloonTip(8000, $Title, $Text, [System.Windows.Forms.ToolTipIcon]::Info)
+        Start-Sleep -Milliseconds 500
+        $ni.Visible = $false
+        $ni.Dispose()
+    } catch { }
+}
 function Start-UpdateOfferProbe {
     # Non-blocking probe of the update feed (runs in a background runspace).
     # -ShowDialog: launched by the check button and reports with dialogs.
@@ -2720,6 +2753,7 @@ function Complete-UpdateOfferProbe {
         return
     }
     Add-ControlActivity -Message ('Доступно обновление {0} (установлено {1}).' -f $offer.Remote, $offer.Local)
+    try { Show-TrayBalloon -Title 'OpenZapret — обновление' -Text ('Доступна версия {0} (сейчас {1}). Открой панель → «Проверить обновления».' -f $offer.Remote, $offer.Local) } catch { }
     $autoInstall = $false
     try { $autoInstall = [bool](Get-Config).autoInstallUpdates } catch { }
     if ($showDialog) { Install-ControlUpdate -Offer $offer }
