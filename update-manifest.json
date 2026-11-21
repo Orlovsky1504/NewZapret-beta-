@@ -1,9 +1,9 @@
 {
-  "version": "3.0.14",
+  "version": "3.0.15",
   "published": "2026-11-21",
-  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.14/zapret-discord-youtube-3.0.14.zip",
-  "sha256": "5deb92adaa00c78cac4f2e8273b14957d188f5343c75c878ac0f37d00c6dd776",
+  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.15/zapret-discord-youtube-3.0.15.zip",
+  "sha256": "a07e2d1ea108143b5d82c792dd86489a2793b834a8ae697d23def6501f0ea78c",
   "notes": [
-    "Трей авто + сравнение GUI (хаос)"
+    "Мобильные пресеты Йота + бейдж (хаос)"
   ]
 }

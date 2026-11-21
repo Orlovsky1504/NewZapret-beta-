@@ -377,11 +377,24 @@ $xamlText = @'
                 </Border>
                 <Border Grid.Column="1" Style="{StaticResource CardBorder}" Margin="0,0,0,14">
                   <StackPanel>
-                    <TextBlock Text="Недавние действия" FontSize="16" FontWeight="SemiBold" Foreground="#F4F7FC" />
-                    <TextBox x:Name="txtActivity" Text="Приложение готово." IsReadOnly="True" BorderThickness="0" Background="Transparent" Foreground="#9FADC2" FontSize="11" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Height="68" Margin="0,8,0,0" />
+                    <TextBlock Text="Мобильный оператор" FontSize="16" FontWeight="SemiBold" Foreground="#F4F7FC" />
+                    <TextBlock Text="Йота/МТС/МегаФон/Tele2 — быстрый профиль 4 стратегий." Foreground="#91A0B8" FontSize="11" Margin="0,6,0,10" TextWrapping="Wrap" />
+                    <WrapPanel>
+                      <Button x:Name="btnCarrierMts" Content="МТС" Style="{StaticResource SecondaryButton}" />
+                      <Button x:Name="btnCarrierMegafon" Content="МегаФон" Style="{StaticResource SecondaryButton}" />
+                      <Button x:Name="btnCarrierTele2" Content="Tele2" Style="{StaticResource SecondaryButton}" />
+                      <Button x:Name="btnCarrierYota" Content="Йота" Style="{StaticResource SecondaryButton}" />
+                    </WrapPanel>
+                    <TextBlock x:Name="txtCarrierState" Text="" Foreground="#75849C" FontSize="11" Margin="0,8,0,0" TextWrapping="Wrap" />
                   </StackPanel>
                 </Border>
               </Grid>
+              <Border Style="{StaticResource CardBorder}" Margin="0,0,0,14">
+                <StackPanel>
+                  <TextBlock Text="Недавние действия" FontSize="16" FontWeight="SemiBold" Foreground="#F4F7FC" />
+                    <TextBox x:Name="txtActivity" Text="Приложение готово." IsReadOnly="True" BorderThickness="0" Background="Transparent" Foreground="#9FADC2" FontSize="11" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Height="68" Margin="0,8,0,0" />
+                  </StackPanel>
+                </Border>
             </StackPanel>
           </ScrollViewer>
         </Grid>
@@ -795,6 +808,7 @@ $script:CmbProfile = $window.FindName('cmbProfile')
 $script:BtnProfileApply = $window.FindName('btnProfileApply')
 $script:TxtProfileState = $window.FindName('txtProfileState')
 $script:TxtProfileQuickState = $window.FindName('txtProfileQuickState')
+$script:TxtCarrierState = $window.FindName('txtCarrierState')
 $script:TxtSiteCheckInput = $window.FindName('txtSiteCheckInput')
 $script:BtnSiteCheck = $window.FindName('btnSiteCheck')
 $script:BtnTrayAutostart = $window.FindName('btnTrayAutostart')
@@ -899,6 +913,23 @@ function Update-ProfileCard {
     } catch { }
 }
 
+function Update-CarrierCard {
+    try {
+        $cfg = Get-Config
+        $cur = ''
+        foreach ($k in @('yota','mts','megafon','tele2')) { if ($cfg.carrierStrategies[$k]) { $cur = $k; break } }
+        if ($script:TxtCarrierState) {
+            if ($cur) { $script:TxtCarrierState.Text = 'Сохранён профиль: ' + $cur + ' (' + [string]$cfg.carrierStrategies[$cur] + ').' }
+            else { $script:TxtCarrierState.Text = 'Профиль оператора не выбран.' }
+        }
+    } catch { }
+}
+function Set-CarrierQuick { param([string]$Carrier, [string]$Label)
+    if (-not (Confirm-ControlAction ('Запустить быстрый подбор для оператора {0}? Потребуется подтверждение в мастере.' -f $Label))) { return }
+    try { Set-ControlStatus -Message ('Оператор: {0}…' -f $Label) } catch { }
+    Start-WizardBenchmark -Carrier $Carrier -Fast $true
+    if ($script:TxtCarrierState) { $script:TxtCarrierState.Text = 'Выбран: ' + $Label + ' — идёт подбор…' }
+}
 function Update-WatchdogCard {
     try {
         $state = Get-WatchdogState
@@ -1003,6 +1034,7 @@ function Refresh-ControlStatus {
         try { Update-ControlPageState } catch { }
         try { Update-WatchdogCard } catch { }
         try { Update-ProfileCard } catch { }
+        try { Update-CarrierCard } catch { }
         try { Update-TrayAutostartCard } catch { }
         $script:TxtToast.Text = 'Статус обновлён: ' + (Get-Date -Format 'HH:mm:ss')
     } catch {
@@ -2168,6 +2200,10 @@ function Set-QuickProfile { param([string]$Id, [string]$Label)
 $window.FindName('btnProfileDiscord').Add_Click({ Set-QuickProfile -Id 'discord-only' -Label 'Только Discord' })
 $window.FindName('btnProfileYoutube').Add_Click({ Set-QuickProfile -Id 'youtube-only' -Label 'Только YouTube' })
 $window.FindName('btnProfileAll').Add_Click({ Set-QuickProfile -Id 'all' -Label 'Весь обход' })
+$window.FindName('btnCarrierMts').Add_Click({ Set-CarrierQuick -Carrier 'mts' -Label 'МТС' })
+$window.FindName('btnCarrierMegafon').Add_Click({ Set-CarrierQuick -Carrier 'megafon' -Label 'МегаФон' })
+$window.FindName('btnCarrierTele2').Add_Click({ Set-CarrierQuick -Carrier 'tele2' -Label 'Tele2' })
+$window.FindName('btnCarrierYota').Add_Click({ Set-CarrierQuick -Carrier 'yota' -Label 'Йота' })
 $window.FindName('btnSiteCheck').Add_Click({
     $siteText = ''
     if ($script:TxtSiteCheckInput) { $siteText = [string]$script:TxtSiteCheckInput.Text }

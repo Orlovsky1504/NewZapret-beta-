@@ -22,7 +22,7 @@
 
 
 
- FILEVERSION 3,0,14,0
+ FILEVERSION 3,0,15,0
 
 
 
@@ -30,7 +30,7 @@
 
 
 
- PRODUCTVERSION 3,0,14,0
+ PRODUCTVERSION 3,0,15,0
 
 
 
@@ -134,7 +134,7 @@ BEGIN
 
 
 
-            VALUE "FileVersion", "3.0.14.0"
+            VALUE "FileVersion", "3.0.15.0"
 
 
 
@@ -174,7 +174,7 @@ BEGIN
 
 
 
-            VALUE "ProductVersion", "3.0.14.0"
+            VALUE "ProductVersion", "3.0.15.0"
 
 
 
