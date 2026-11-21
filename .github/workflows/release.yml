@@ -1,4 +1,4 @@
-name: Release
+﻿name: Release
 
 on:
   workflow_dispatch:
@@ -81,23 +81,20 @@ jobs:
           } else { Write-Host "VirusTotal docs already current" }
 
       - name: Generate release notes from CHANGELOG
-        shell: pwsh
+        shell: bash
         run: |
-          $tag = $env:TAG
-          $cl = Get-Content -LiteralPath CHANGELOG.md -Raw
-          # Extract ## <tag> section until next ## 
-          $pattern = "(?ms)^##\s*\[?" + [regex]::Escape($tag) + "\b.*?\r?\n(.*?)(?=^##\s|\z)"
-          $m = [regex]::Match($cl, $pattern)
-          if ($m.Success) {
-            $notes = $m.Groups[1].Value.Trim()
-            $body = "### Что изменилось в $tag`n`n" + $notes + "`n`n---`nSHA256 — в `SHA256SUMS.txt`" 
-          } else {
-            $body = "Релиз $tag — см. CHANGELOG.md"
-          }
-          $body | Set-Content -LiteralPath release_notes.md -NoNewline
-          Write-Host "--- release_notes.md ---"
-          Get-Content -LiteralPath release_notes.md | Write-Host
-
+          TAG="$TAG"
+          NOTES=$(sed -n "/^## $TAG/,/^## /p" CHANGELOG.md | sed '1d;$d')
+          if [ -z "$NOTES" ]; then NOTES="Релиз $TAG — см. CHANGELOG.md"; fi
+          {
+            echo "### Что изменилось в $TAG"
+            echo ""
+            echo "$NOTES"
+            echo ""
+            echo "---"
+            echo "SHA256 — в SHA256SUMS.txt"
+          } > release_notes.md
+          cat release_notes.md
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
