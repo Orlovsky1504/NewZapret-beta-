@@ -33,10 +33,10 @@ $script:UiLanguage = 'ru'
 $script:IpsetSentinel  = '203.0.113.113/32'
 $script:IpsetFile      = Join-Path $script:ListsDir 'ipset-all.txt'
 $script:IpsetBackup    = Join-Path $script:ListsDir 'ipset-all.txt.backup'
-$script:IpsetUrl       = 'https://raw.githubusercontent.com/Flowseal/zapret-discord-youtube/refs/heads/main/.service/ipset-service.txt'
-$script:HostsUrl       = 'https://raw.githubusercontent.com/Flowseal/zapret-discord-youtube/refs/heads/main/.service/hosts'
-$script:VersionUrl     = 'https://raw.githubusercontent.com/Flowseal/zapret-discord-youtube/main/.service/version.txt'
-$script:ReleasesUrl    = 'https://github.com/Flowseal/zapret-discord-youtube/releases/latest'
+$script:IpsetUrl       = 'https://raw.githubusercontent.com/Flowseal/zapret-discord-youtube/refs/heads/main/.service/ipset-service.txt' # TODO: migrate to Orlovsky1504/OpenZapret when .service files exist
+$script:HostsUrl       = 'https://raw.githubusercontent.com/Flowseal/zapret-discord-youtube/refs/heads/main/.service/hosts' # TODO: migrate
+$script:VersionUrl     = 'https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/.service/version.txt'
+$script:ReleasesUrl    = 'https://github.com/Orlovsky1504/OpenZapret/releases/latest'
 
 $script:OnWindows = $true
 if ($PSVersionTable.PSVersion.Major -ge 6) {

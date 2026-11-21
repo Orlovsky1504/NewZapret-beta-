@@ -2478,6 +2478,7 @@ $window.FindName('btnPingTest').Add_Click({
     Start-ControlAction -Title 'Качество связи' -Action { [void](Invoke-LineQualityTest) }
 })
 $window.FindName('btnGameFilterApply').Add_Click({
+    if ([int]$script:CmbGameFilter.SelectedIndex -lt 0) { Show-ControlError 'Выберите режим игрового фильтра.'; return }
     $modes = @('disabled', 'all', 'tcp', 'udp')
     $mode = $modes[[int]$script:CmbGameFilter.SelectedIndex]
     if (-not (Confirm-ControlAction 'Применить режим игрового трафика? Служба будет перезапущена.')) { return }
