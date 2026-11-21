@@ -1452,6 +1452,8 @@ function Update-ControlPageState {
         $script:TxtGameFilterState.Text = ('Сейчас: {0}   ·   порты TCP: {1}   ·   порты UDP: {2}' -f @('выключен','TCP и UDP','только TCP','только UDP')[$modeIndex], $cfg.gameFilter.tcp, $cfg.gameFilter.udp)
         $updatesText = if ($cfg.checkUpdates) { 'включена' } else { 'выключена' }
         $script:BtnToggleUpdates.Content = ('Автопроверка: {0}' -f $updatesText)
+        $autoInstallText = if ($cfg.autoInstallUpdates) { 'включена' } else { 'выключена' }
+        $script:BtnToggleAutoInstall.Content = ('Автоустановка: {0}' -f $autoInstallText)
         $schedOn = $false
         try { $schedOn = [bool](Test-AutoSelectSchedule) } catch { }
         $script:BtnScheduleToggle.Content = if ($schedOn) { 'Перепроверка: вкл — выключить' } else { 'Перепроверка: выкл — включить' }
@@ -2823,10 +2825,10 @@ $script:UpdateProbeTimer.Add_Tick({ Complete-UpdateOfferProbe })
 $window.Add_ContentRendered({
     Refresh-ControlStatus
     $script:StatusTimer.Start()
-    Start-UpdateOfferProbe
+    try { if ((Get-Config).checkUpdates) { Start-UpdateOfferProbe } } catch { Start-UpdateOfferProbe }
     $shortcutState = Get-ControlShortcutState
     if (-not $shortcutState.Asked) {
-        $answer = [System.Windows.MessageBox]::Show($window, 'Создать ярлык "Zapret Control" на рабочем столе? Ярлык с иконкой запускает приложение сразу, без консольного окна.', 'Ярлык приложения', [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Question)
+        $answer = [System.Windows.MessageBox]::Show($window, 'Создать ярлык "OpenZapret" на рабочем столе? Ярлык с иконкой запускает приложение сразу, без консольного окна.', 'Ярлык приложения', [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Question)
         if ($answer -eq [System.Windows.MessageBoxResult]::Yes) {
             try {
                 $link = Install-ControlShortcut
