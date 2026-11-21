@@ -57,7 +57,7 @@
 > | `bin/WinDivert64.sys` | `8da085332782708d8767bcace5327a6ec7283c17cfb85e40b03cd2323a90ddc2` | [открыть](https://www.virustotal.com/gui/file/8da085332782708d8767bcace5327a6ec7283c17cfb85e40b03cd2323a90ddc2) |
 > | `Zapret-Control.exe` | `c01b16d7c461705ccdf5ccec6b9089e926ae5c8a86a51368ab955bec61fa6c74` | [открыть](https://www.virustotal.com/gui/file/c01b16d7c461705ccdf5ccec6b9089e926ae5c8a86a51368ab955bec61fa6c74) |
 > | `Zapret-Tray.exe` | `b8236432a360d046dfa41ac7782089d623c2bed21057a87d7c5f69e8548c7081` | [открыть](https://www.virustotal.com/gui/file/b8236432a360d046dfa41ac7782089d623c2bed21057a87d7c5f69e8548c7081) |
-> | **ZIP 2.9.16** | `5e2c190e2dee5dca38f8fbcd1ccb740c676e89816fa9b0195cbc1dbc4d0603d3` | [открыть](https://www.virustotal.com/gui/file/5e2c190e2dee5dca38f8fbcd1ccb740c676e89816fa9b0195cbc1dbc4d0603d3) — [скачать ZIP](https://github.com/Orlovsky1504/OpenZapret/releases/download/2.9.16/zapret-discord-youtube-2.9.16.zip) |
+> | **ZIP 2.9.16** | `6f3619711d8c5196762e986cc310056675917d3f11e793b35d17a4d5255e8f04` | [открыть](https://www.virustotal.com/gui/file/6f3619711d8c5196762e986cc310056675917d3f11e793b35d17a4d5255e8f04) — [скачать ZIP](https://github.com/Orlovsky1504/OpenZapret/releases/download/2.9.16/zapret-discord-youtube-2.9.16.zip) |
 >
 > Проверка: `certutil -hashfile bin\\winws.exe SHA256` и сравни с таблицей · Полный отчёт: [`assets/screenshots/virustotal-links.html`](https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/assets/screenshots/virustotal-links.html) (артефакт `virustotal-proof` на `windows-latest`).
 >
