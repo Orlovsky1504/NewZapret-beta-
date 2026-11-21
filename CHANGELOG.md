@@ -1,4 +1,8 @@
-﻿## 3.0.2 — 2026-11-21 — Launcher Splash Fix
+﻿## 3.0.3 — 2026-11-21 — PS Log
+
+- **Диагностика**: лаунчер пишет PowerShell вывод в `%TEMP%\OpenZapret-PS.log` (`*>`), детальный `TokenElevation`, фикс `modPath` логов
+
+## 3.0.2 — 2026-11-21 — Launcher Splash Fix
 
 - **Фикс сплэша**: титул `OpenZapretSplash` не путается с панелью, `FindWindow` теперь игнорирует сплэш (`panel!=g_splash`), логи `%ls` показывают полный `modPath/scriptPath/psPath`
 - Панель теперь корректно детектится после UAC, таймаут 10с

@@ -170,15 +170,17 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE prev, PWSTR cmdLine, int show){
 
     BOOL isAdmin=FALSE;
     { HANDLE token; if(OpenProcessToken(GetCurrentProcess(),TOKEN_QUERY,&token)){
-        TOKEN_ELEVATION elev; DWORD sz;
-        if(GetTokenInformation(token,TokenElevation,&elev,sizeof(elev),&sz)) isAdmin=elev.TokenIsElevated;
+        TOKEN_ELEVATION elev; DWORD sz; BOOL ok=GetTokenInformation(token,TokenElevation,&elev,sizeof(elev),&sz);
+        Log(L"TokenElevation ok=%d val=%d", ok, ok?elev.TokenIsElevated:0);
+        if(ok) isAdmin=elev.TokenIsElevated;
         CloseHandle(token);
-    }}
+    } else { Log(L"OpenProcessToken failed %lu", GetLastError()); }
+    }
     Log(L"isAdmin=%d", isAdmin);
 
     if(!isAdmin){
         Log(L"Requesting UAC via ShellExecuteEx");
-        _snwprintf(fullCmdLine,2048,L"-NoLogo -NoProfile -STA -ExecutionPolicy Bypass -File \"%s\"",scriptPath);
+        { wchar_t psLog[MAX_PATH]; GetTempPathW(MAX_PATH, psLog); wcscat(psLog, L"OpenZapret-PS.log"); _snwprintf(fullCmdLine,2048,L"-NoLogo -NoProfile -STA -ExecutionPolicy Bypass -File \"%s\" *> \"%s\"",scriptPath, psLog); Log(L"UAC fullCmdLine=%ls", fullCmdLine); }
         SHELLEXECUTEINFOW sei={sizeof(sei)};
         sei.lpVerb=L"runas"; sei.lpFile=psPath; sei.lpParameters=fullCmdLine;
         sei.nShow=SW_HIDE; sei.fMask=SEE_MASK_NOCLOSEPROCESS;
@@ -205,7 +207,7 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE prev, PWSTR cmdLine, int show){
 
     // уже админ — CreateProcess
     Log(L"CreateProcess direct");
-    _snwprintf(args,2048,L"\"%s\" -NoLogo -NoProfile -STA -ExecutionPolicy Bypass -File \"%s\"",psPath,scriptPath);
+    { wchar_t psLog2[MAX_PATH]; GetTempPathW(MAX_PATH, psLog2); wcscat(psLog2, L"OpenZapret-PS.log"); _snwprintf(args,2048,L"\"%s\" -NoLogo -NoProfile -STA -ExecutionPolicy Bypass -Command \"& '%s' *> '%s'\"",psPath,scriptPath, psLog2); Log(L"direct args=%ls", args); }
     Log(L"args=%ls", args);
     STARTUPINFOW si={sizeof(si)}; si.dwFlags=STARTF_USESHOWWINDOW; si.wShowWindow=SW_HIDE;
     PROCESS_INFORMATION pi={0};
@@ -223,4 +225,4 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE prev, PWSTR cmdLine, int show){
     if(g_mutex) ReleaseMutex(g_mutex);
     Log(L"exit");
     return 0;
-}
+    }
