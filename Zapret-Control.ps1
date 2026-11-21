@@ -28,7 +28,7 @@ try {
 }
 
 if (-not (Test-Path -LiteralPath $script:ModulePath -PathType Leaf) -or -not (Test-Path -LiteralPath $script:CliPath -PathType Leaf)) {
-    [void][System.Windows.MessageBox]::Show('Не найдены src\Zapret.psm1 или zapret.ps1. Распакуйте приложение рядом с файлами проекта.', 'Zapret Control', [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Error)
+    [void][System.Windows.MessageBox]::Show('Не найдены src\Zapret.psm1 или zapret.ps1. Распакуйте приложение рядом с файлами проекта.', 'OpenZapret', [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Error)
     exit 1
 }
 
@@ -44,21 +44,21 @@ try {
         exit 0
     }
 } catch {
-    [void][System.Windows.MessageBox]::Show(("Не удалось запросить права администратора: {0}" -f $_.Exception.Message), 'Zapret Control', [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Error)
+    [void][System.Windows.MessageBox]::Show(("Не удалось запросить права администратора: {0}" -f $_.Exception.Message), 'OpenZapret', [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Error)
     exit 1
 }
 
 try {
     Import-Module -Name $script:ModulePath -Force -ErrorAction Stop
 } catch {
-    [void][System.Windows.MessageBox]::Show(("Не удалось загрузить модуль zapret: {0}" -f $_.Exception.Message), 'Zapret Control', [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Error)
+    [void][System.Windows.MessageBox]::Show(("Не удалось загрузить модуль zapret: {0}" -f $_.Exception.Message), 'OpenZapret', [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Error)
     exit 1
 }
 
 $xamlText = @'
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Zapret Control" Height="780" Width="1180" MinHeight="680" MinWidth="980"
+        Title="OpenZapret" Height="780" Width="1180" MinHeight="680" MinWidth="980"
         WindowStartupLocation="CenterScreen" Background="#0B1020" Foreground="#E8EEF8"
         FontFamily="Segoe UI" ResizeMode="CanResize">
   <Window.Resources>
@@ -282,7 +282,7 @@ $xamlText = @'
         </StackPanel>
         <StackPanel Grid.Row="2">
           <Border Height="1" Background="#202B40" Margin="0,0,0,16" />
-          <TextBlock x:Name="txtVersion" Text="Zapret Control" Foreground="#AAB6C9" FontSize="11" />
+          <TextBlock x:Name="txtVersion" Text="OpenZapret" Foreground="#AAB6C9" FontSize="11" />
           <TextBlock Text="Старый zapret.bat остаётся без изменений." TextWrapping="Wrap" Foreground="#65738B" FontSize="10" Margin="0,5,0,0" />
         </StackPanel>
       </Grid>
@@ -722,7 +722,7 @@ try {
     $window = [Windows.Markup.XamlReader]::Load($xmlReader)
     $xmlReader.Close()
 } catch {
-    [void][System.Windows.MessageBox]::Show(("Не удалось построить окно: {0}" -f $_.Exception.Message), 'Zapret Control', [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Error)
+    [void][System.Windows.MessageBox]::Show(("Не удалось построить окно: {0}" -f $_.Exception.Message), 'OpenZapret', [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Error)
     exit 1
 }
 
@@ -960,7 +960,7 @@ function Refresh-ControlStatus {
             default { 'Неизвестно' }
         }
         $script:TxtIpState.Text = $ipsetLabel
-        try { $script:TxtVersion.Text = 'Версия ' + (Get-LocalVersion) } catch { $script:TxtVersion.Text = 'Zapret Control' }
+        try { $script:TxtVersion.Text = 'Версия ' + (Get-LocalVersion) } catch { $script:TxtVersion.Text = 'OpenZapret' }
         try { Update-ControlPageState } catch { }
         try { Update-WatchdogCard } catch { }
         try { Update-ProfileCard } catch { }
@@ -1222,7 +1222,7 @@ function Confirm-ControlAction {
 function Show-ControlHelp {
     # In-app quick guide; the full manual lives in ИНСТРУКЦИЯ.txt next to the app.
     $dialog = New-Object System.Windows.Window
-    $dialog.Title = 'Инструкция — Zapret Control'
+    $dialog.Title = 'Инструкция — OpenZapret'
     $dialog.Width = 640
     $dialog.Height = 660
     $dialog.WindowStartupLocation = 'CenterOwner'
@@ -1845,7 +1845,7 @@ function Get-ControlShortcutState {
     $desktop = [Environment]::GetFolderPath('Desktop')
     if ([string]::IsNullOrWhiteSpace($desktop)) { $desktop = [Environment]::GetFolderPath('UserProfile') }
     if ([string]::IsNullOrWhiteSpace($desktop)) { $desktop = '.' }
-    $lnkPath = Join-Path $desktop 'Zapret Control.lnk'
+    $lnkPath = Join-Path $desktop 'OpenZapret.lnk'
     return [pscustomobject]@{
         Asked          = (Test-Path -LiteralPath $marker -PathType Leaf)
         MarkerPath     = $marker
@@ -1877,7 +1877,7 @@ function Install-ControlShortcut {
     }
     $shortcut.WorkingDirectory = $script:AppRoot
     $shortcut.IconLocation = '{0},0' -f $iconPath
-    $shortcut.Description = 'Zapret Control — панель управления обходом'
+    $shortcut.Description = 'OpenZapret — панель управления обходом'
     $shortcut.Save()
     return $state.ShortcutPath
 }

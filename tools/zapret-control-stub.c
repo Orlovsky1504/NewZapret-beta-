@@ -1,5 +1,5 @@
 /*
- * Zapret Control launcher.
+ * OpenZapret launcher.
  *
  * A tiny native Windows executable so the panel looks and behaves like a real
  * application: double-click Zapret-Control.exe (icon + "Application" file type,
@@ -18,7 +18,7 @@
 
 static void ShowError(const wchar_t *message)
 {
-    MessageBoxW(NULL, message, L"Zapret Control", MB_OK | MB_ICONERROR);
+    MessageBoxW(NULL, message, L"OpenZapret", MB_OK | MB_ICONERROR);
 }
 
 int WINAPI wWinMain(HINSTANCE instance, HINSTANCE prevInstance, PWSTR commandLine, int showMode)

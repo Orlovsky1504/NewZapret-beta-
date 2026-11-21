@@ -83,7 +83,7 @@ function Get-DefaultConfig {
             yota     = $null
         }                            # last live-tested narrow strategy per selected mobile carrier
         rollback     = $null           # set by Save-RollbackSnapshot; see Rollback section
-        updateFeed        = 'https://raw.githubusercontent.com/Orlovsky1504/NewZapret-beta-/main/update-manifest.json'  # update-manifest.json feed (project repo)
+        updateFeed        = 'https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/update-manifest.json'  # update-manifest.json feed (project repo)
         autoInstallUpdates = $false     # install feed updates automatically after the hard gates pass
     }
 }

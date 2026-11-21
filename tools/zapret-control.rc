@@ -13,13 +13,13 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "CompanyName", "zapret-discord-youtube"
-            VALUE "FileDescription", "Zapret Control"
+            VALUE "CompanyName", "OpenZapret"
+            VALUE "FileDescription", "OpenZapret"
             VALUE "FileVersion", "2.9.8.0"
             VALUE "InternalName", "Zapret-Control"
             VALUE "LegalCopyright", "MIT License"
             VALUE "OriginalFilename", "Zapret-Control.exe"
-            VALUE "ProductName", "Zapret Control"
+            VALUE "ProductName", "OpenZapret"
             VALUE "ProductVersion", "2.9.8.0"
         END
     END

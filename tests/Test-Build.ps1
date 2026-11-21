@@ -1595,7 +1595,7 @@ Check 'control panel launcher starts Zapret-Control.ps1 via -File' ($controlLaun
 Check 'control panel is a WPF window over the existing module' ($controlPanelText.Contains('PresentationFramework') -and $controlPanelText.Contains('src\Zapret.psm1') -and $controlPanelText.Contains('Get-ZapretServiceInfo'))
 Check 'control panel keeps zapret.bat intact and offers the classic menu' ($controlPanelText.Contains('zapret.bat') -and $controlPanelText.Contains('btnClassicMenu') -and $zapretBat.Contains('zapret.ps1'))
 Check 'control panel uses the custom icon for the window and the shortcut' ($controlPanelText.Contains('Zapret-Control.ico') -and $controlPanelText.Contains('BitmapFrame') -and $controlPanelText.Contains('IconLocation'))
-Check 'control panel shortcut starts the app without a console window' ($controlPanelText.Contains('WScript.Shell') -and $controlPanelText.Contains('-WindowStyle Hidden') -and $controlPanelText.Contains('Zapret Control.lnk') -and $controlPanelText.Contains('Get-WindowsSystemToolPath'))
+Check 'control panel shortcut starts the app without a console window' ($controlPanelText.Contains('WScript.Shell') -and $controlPanelText.Contains('-WindowStyle Hidden') -and $controlPanelText.Contains('OpenZapret.lnk') -and $controlPanelText.Contains('Get-WindowsSystemToolPath'))
 $autoSelectFileText = [IO.File]::ReadAllText((Join-Path $repoRoot 'src\parts\Zapret.AutoSelect.ps1'))
 Check 'benchmark failures record why winws.exe failed to start' ($autoSelectFileText.Contains('Get-WinwsStartFailureText') -and $autoSelectFileText.Contains('StartError') -and $autoSelectFileText.Contains('ExitCode'))
 Check 'wizard benchmark shows the winws start reason' ($controlPanelText.Contains('Причина: {0}'))
@@ -1993,7 +1993,7 @@ Check 'README version badge tracks .service/version.txt' ($readmeBadgeVer -eq ([
 Check 'update offer without feed is honest about configuration' (-not (Get-ZapretUpdateOffer).Configured -and (Get-ZapretUpdateOffer).Error -match 'updateFeed')
 $defaultsProbePath = Join-Path ([IO.Path]::GetTempPath()) ('zapret-defaults-' + [Guid]::NewGuid().ToString('N') + '.json')
 $defaultsProbe = Get-Config -Path $defaultsProbePath
-Check 'update config: default feed points at the NewZapret repo, auto-install off' ($defaultsProbe.updateFeed -eq 'https://raw.githubusercontent.com/Orlovsky1504/NewZapret-beta-/main/update-manifest.json' -and -not $defaultsProbe.autoInstallUpdates)
+Check 'update config: default feed points at the OpenZapret repo, auto-install off' ($defaultsProbe.updateFeed -eq 'https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/update-manifest.json' -and -not $defaultsProbe.autoInstallUpdates)
 Remove-Item -LiteralPath $defaultsProbePath -Force -ErrorAction SilentlyContinue
 [void](Update-Config @{ updateFeed = 'https://example.com/update-manifest.json'; autoInstallUpdates = $true })
 Check 'update config: feed and auto-install round-trip' ((Get-Config).updateFeed -eq 'https://example.com/update-manifest.json' -and (Get-Config).autoInstallUpdates -eq $true)
