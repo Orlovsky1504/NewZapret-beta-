@@ -1,4 +1,4 @@
-name: Release
+﻿name: Release
 
 on:
   workflow_dispatch:
@@ -80,11 +80,30 @@ jobs:
             Write-Host "VirusTotal docs pushed"
           } else { Write-Host "VirusTotal docs already current" }
 
+      - name: Generate release notes from CHANGELOG
+        shell: pwsh
+        run: |
+          $tag = $env:TAG
+          $cl = Get-Content -LiteralPath CHANGELOG.md -Raw
+          # Ищу секцию ## <tag> ... до следующего ## 
+          $pattern = "(?ms)^##\s*\[?" + [regex]::Escape($tag) + "\b.*?\r?\n(.*?)(?=^##\s|\z)"
+          $m = [regex]::Match($cl, $pattern)
+          if ($m.Success) {
+            $notes = $m.Groups[1].Value.Trim()
+            $body = "### Что изменилось в $tag`n`n" + $notes + "`n`n---`nSHA256 — в `SHA256SUMS.txt`" 
+          } else {
+            $body = "Релиз $tag — см. CHANGELOG.md"
+          }
+          $body | Set-Content -LiteralPath release_notes.md -NoNewline
+          Write-Host "--- release_notes.md ---"
+          Get-Content -LiteralPath release_notes.md | Write-Host
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.TAG }}
           name: ${{ env.TAG }}
+          body_path: release_notes.md
           files: |
             zapret-discord-youtube-${{ env.TAG }}.zip
             zapret-discord-youtube-${{ env.TAG }}.rar

@@ -1,5 +1,11 @@
 ﻿# Changelog
 
+## 2.9.15 — 2026-11-21
+- Исправлено: обновление с кодом 1 из панели/трея — панель и трей теперь закрываются ПЕРВЫМ делом до остановки служб/winws/драйвера (фикс `Update-Zapret.ps1:Stop-ZapretRuntimeForUpdate`), `CloseMainWindow` + `WaitForExit 15×200ms` + `Stop-Process -Force`
+- Исправлено: `preflight` больше не падает мгновенно — `Test-ZapretFileExclusiveAccess` с 3 попытками × 1.2с (панель успевает освободить `Zapret-Control.ps1`/`Update-Zapret.ps1`)
+- Исправлено: `Install-ZapretUpdate -AssumeYes` из панели (не зависает на промпте)
+- Добавлено: релизы теперь пишут изменения автоматически из `CHANGELOG.md` в описание на GitHub
+
 ## 2.9.14 — 2026-11-21
 - Исправлено: кнопки Автопроверка/Автоустановка не кликались — пропущен `$script:BtnToggle* = FindName` (всегда null, текст не менялся)
 - Исправлено: миграция `.service/ipset-service.txt` + `hosts` и всех 4 URL на `Orlovsky1504/OpenZapret` (полный уход от Flowseal)
