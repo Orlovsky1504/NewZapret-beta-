@@ -1,4 +1,8 @@
-﻿## 3.0.5 — 2026-11-21 — Фикс InvokeMethodOnNull
+﻿## 3.0.6 — 2026-11-21 — Без консоли
+
+- **Убрана консоль**: `-WindowStyle Hidden` + `SW_HIDE`, фоновая консоль PowerShell больше не висит за панелью
+
+## 3.0.5 — 2026-11-21 — Фикс InvokeMethodOnNull
 
 - **Исправлена панель**: `txtLogFilter`/`txtWhatsNew`/`btnCopyLog`/`btnClearLog`/`btnOpenReleases` отсутствовали в XAML → `FindName` возвращал `NULL` → `InvokeMethodOnNull` на `Add_TextChanged`/`Add_Click`. Теперь гварды `if ($el=FindName) { $el.Add_... }`
 

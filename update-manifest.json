@@ -1,9 +1,9 @@
 {
-  "version": "3.0.5",
+  "version": "3.0.6",
   "published": "2026-11-21",
-  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.5/zapret-discord-youtube-3.0.5.zip",
+  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.6/zapret-discord-youtube-3.0.6.zip",
   "sha256": "f78577fe3305155757ce246812d977e4f5ecaead85ba723866457c56cac9c154",
   "notes": [
-    "Фикс InvokeMethodOnNull (NULL guard)"
+    "Убрана фоновая консоль"
   ]
 }

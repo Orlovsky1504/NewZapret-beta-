@@ -20,13 +20,13 @@ int WINAPI wWinMain(HINSTANCE h, HINSTANCE p, PWSTR c, int s){
     UINT n=GetWindowsDirectoryW(win, MAX_PATH); if(!n){ MessageBoxW(NULL, L"Не найден Windows.", L"OpenZapret", MB_OK|MB_ICONERROR); return 1; }
     _snwprintf(ps, MAX_PATH, L"%s\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", win);
     if(GetFileAttributesW(ps)==INVALID_FILE_ATTRIBUTES){ MessageBoxW(NULL, L"Не найден PowerShell 5.1.", L"OpenZapret", MB_OK|MB_ICONERROR); return 1; }
-    _snwprintf(args, 4096, L"-NoLogo -NoProfile -ExecutionPolicy Bypass -File \"%s\"", ps1);
+    _snwprintf(args, 4096, L"-NoLogo -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File \"%s\"", ps1);
     SHELLEXECUTEINFOW sei={0};
     sei.cbSize=sizeof(sei);
     sei.lpVerb=L"runas";
     sei.lpFile=ps;
     sei.lpParameters=args;
-    sei.nShow=SW_SHOWNORMAL;
+    sei.nShow=SW_HIDE;
     if(!ShellExecuteExW(&sei)){
         DWORD e=GetLastError();
         if(e==ERROR_CANCELLED) return 0;
