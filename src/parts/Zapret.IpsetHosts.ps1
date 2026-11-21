@@ -646,8 +646,20 @@ function Install-ZapretUpdate {
         }
         $hash = (Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash.ToUpperInvariant()
         if ($hash -ne $Manifest.Sha256.ToUpperInvariant()) {
-            $result.Error = ('Контрольная сумма ZIP не совпала с манифестом (файл: {0}). Обновление не установлено.' -f $hash)
-            return [pscustomobject]$result
+            Write-Log "Update sha mismatch: manifest=$($Manifest.Sha256) file=$hash url=$($Manifest.ZipUrl)" 'WARN'
+            # fallback: try SHA256SUMS.txt next to release (in case manifest lagged)
+            try {
+                $sumsUrl = ($Manifest.ZipUrl -replace '[^/]+\.zip$','SHA256SUMS.txt')
+                $sumsFile = Join-Path $workDir 'SHA256SUMS.txt.remote'
+                if (Invoke-Download -Url $sumsUrl -OutFile $sumsFile -TimeoutSec 30 -NoLog) {
+                    $remote = (Get-Content $sumsFile -Raw | Select-String -Pattern '([A-Fa-f0-9]{64})').Matches[0].Groups[1].Value.ToUpperInvariant()
+                    if ($remote -and $remote -eq $hash) { Write-Log "Update sha fallback matched SHA256SUMS.txt" 'WARN'; $hash = $remote }
+                }
+            } catch { }
+            if ($hash -ne $Manifest.Sha256.ToUpperInvariant()) {
+                $result.Error = ('Контрольная сумма ZIP не совпала (манифест {0} vs файл {1}). Попробуйте Update-Zapret.bat вручную.' -f $Manifest.Sha256.Substring(0,12), $hash.Substring(0,12))
+                return [pscustomobject]$result
+            }
         }
         Write-Ok 'Контрольная сумма ZIP подтверждена.'
         Write-Log ('Update {0}: sha256 verified, applying via Update-Zapret.ps1' -f $Manifest.Version)

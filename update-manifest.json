@@ -1,9 +1,9 @@
 {
-  "version": "3.0.10",
+  "version": "3.0.11",
   "published": "2026-11-21",
-  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.10/zapret-discord-youtube-3.0.10.zip",
-  "sha256": "38adef241932b85be3acda26ca6ed60e6df80a691113c86030961c9a3de05276",
+  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.11/zapret-discord-youtube-3.0.11.zip",
+  "sha256": "976e2a62abfd0efa5740e7d9c54d60089d625ab32a53845d87f519d13a6b48ec",
   "notes": [
-    "Живой статус 5с + Anti-stuck авто-убийство winws"
+    "Фикс самообновления в панели (sha фолбэк)"
   ]
 }

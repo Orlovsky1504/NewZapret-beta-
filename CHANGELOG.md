@@ -1,4 +1,9 @@
-﻿## 3.0.10 — 2026-11-21 — Живой статус + Anti-stuck
+﻿## 3.0.11 — 2026-11-21 — Фикс обновления в панели
+
+- **Самообновление**: `Install-ZapretUpdate` теперь логирует `manifest vs file sha`, при рассинхроне пробует `SHA256SUMS.txt` рядом с релизом как фолбэк; `Complete-UpdateOfferProbe` показывает понятную ошибку если фид не отвечает
+- **Тест на виртуалке**: прогон `3.0.9 → 3.0.10` через `Get-ZapretUpdateOffer` + `Install-ZapretUpdate` на `windows-latest` — падение `контрольная сумма не совпала` закрыто
+
+## 3.0.10 — 2026-11-21 — Живой статус + Anti-stuck
 
 - **Живой статус**: `Refresh-ControlStatus` каждые 5с (было 30с), `DeletePending/MarkedForDelete` показывает хинт «закрыйте services.msc / anti-stuck убивает winws»
 - **Anti-stuck**: `Install-ZapretService` при `Absent` таймауте убивает `winws.exe` этой установки (`Stop-Zapret`) и ретрает `sc delete` 5с

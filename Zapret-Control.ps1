@@ -2801,7 +2801,8 @@ function Complete-UpdateOfferProbe {
     $script:UpdateProbeAsync = $null
 
     if (-not $offer) {
-        if ($showDialog) { Show-ControlError 'Проверка обновлений не выполнена (см. журнал).' }
+        Add-ControlActivity -Message 'Проверка обновлений: нет ответа от фида (см. logs).'
+        if ($showDialog) { Show-ControlError 'Проверка обновлений не выполнена — нет ответа от updateFeed. Проверьте интернет и что update-manifest.json доступен.' }
         return
     }
     if (-not $offer.Configured) {
