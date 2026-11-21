@@ -367,6 +367,12 @@ $xamlText = @'
                   <StackPanel>
                     <TextBlock Text="Для начала" FontSize="16" FontWeight="SemiBold" Foreground="#F4F7FC" />
                     <TextBlock Text="Если служба ещё не настроена, запустите автонастройку. Она проверит подключение и покажет результат перед применением." Foreground="#A6B3C6" FontSize="12" TextWrapping="Wrap" Margin="0,10,0,0" />
+                    <WrapPanel Margin="0,12,0,0">
+                      <Button x:Name="btnProfileDiscord" Content="Только Discord" Style="{StaticResource SecondaryButton}" />
+                      <Button x:Name="btnProfileYoutube" Content="Только YouTube" Style="{StaticResource SecondaryButton}" />
+                      <Button x:Name="btnProfileAll" Content="Весь обход" Style="{StaticResource SecondaryButton}" />
+                    </WrapPanel>
+                    <TextBlock x:Name="txtProfileQuickState" Text="" Foreground="#75849C" FontSize="11" Margin="0,8,0,0" TextWrapping="Wrap" />
                   </StackPanel>
                 </Border>
                 <Border Grid.Column="1" Style="{StaticResource CardBorder}" Margin="0,0,0,14">
@@ -788,6 +794,7 @@ $script:BtnCheckBypass = $window.FindName('btnCheckBypass')
 $script:CmbProfile = $window.FindName('cmbProfile')
 $script:BtnProfileApply = $window.FindName('btnProfileApply')
 $script:TxtProfileState = $window.FindName('txtProfileState')
+$script:TxtProfileQuickState = $window.FindName('txtProfileQuickState')
 $script:TxtSiteCheckInput = $window.FindName('txtSiteCheckInput')
 $script:BtnSiteCheck = $window.FindName('btnSiteCheck')
 $script:BtnTrayAutostart = $window.FindName('btnTrayAutostart')
@@ -888,6 +895,7 @@ function Update-ProfileCard {
             }
             $script:TxtProfileState.Text = $note
         }
+        if ($script:TxtProfileQuickState) { $script:TxtProfileQuickState.Text = 'Профиль: ' + $label }
     } catch { }
 }
 
@@ -2144,6 +2152,20 @@ $window.FindName('btnProfileApply').Add_Click({
         Refresh-ControlStatus
     } catch { Show-ControlError $_.Exception.Message }
 })
+function Set-QuickProfile { param([string]$Id, [string]$Label)
+    try {
+        $result = Set-BypassProfile -Profile $Id
+        Add-ControlActivity -Message ("Профиль «{0}» применён: исключено {1}." -f $Label, $result.Domains.Count)
+        if ($script:CurrentServiceInfo -and $script:CurrentServiceInfo.Installed -and [string]$script:CurrentServiceInfo.State -eq 'Running') {
+            $a=[System.Windows.MessageBox]::Show($script:Window,'Перезапустить службу сейчас?','Перезапуск zapret','YesNo','Question')
+            if($a -eq 'Yes'){ try{ Restart-Service -Name zapret -Force -ErrorAction Stop; (Get-Service zapret).WaitForStatus('Running',[TimeSpan]::FromSeconds(20)); Add-ControlActivity -Message 'Служба перезапущена.' }catch{ Show-ControlError $_.Exception.Message } }
+        }
+        Update-ProfileCard; Refresh-ControlStatus
+    } catch { Show-ControlError $_.Exception.Message }
+}
+$window.FindName('btnProfileDiscord').Add_Click({ Set-QuickProfile -Id 'discord-only' -Label 'Только Discord' })
+$window.FindName('btnProfileYoutube').Add_Click({ Set-QuickProfile -Id 'youtube-only' -Label 'Только YouTube' })
+$window.FindName('btnProfileAll').Add_Click({ Set-QuickProfile -Id 'all' -Label 'Весь обход' })
 $window.FindName('btnSiteCheck').Add_Click({
     $siteText = ''
     if ($script:TxtSiteCheckInput) { $siteText = [string]$script:TxtSiteCheckInput.Text }

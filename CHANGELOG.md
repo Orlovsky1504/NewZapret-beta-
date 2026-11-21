@@ -1,4 +1,8 @@
-﻿## 3.0.8 — 2026-11-21 — Фикс службы + XAML
+﻿## 3.0.9 — 2026-11-21 — Профили 1-клик (хаос)
+
+- **Хаотичный порядок**: добавлены кнопки «Только Discord / Только YouTube / Весь обход» на главной + `txtProfileQuickState` + `Set-QuickProfile` (быстрый `Set-BypassProfile` с рестартом службы)
+
+## 3.0.8 — 2026-11-21 — Фикс службы + XAML
 
 - **Служба не глотает ошибки**: `Install-ZapretService` теперь ждёт `Absent` после `sc delete` (10с) и проверяет `sc start` — при `1072 DELETE_PENDING`/`5 Access Denied` бросает понятную ошибку с советом закрыть `services.msc` и перезагрузиться (было `Out-Null` → `STOPPED` выглядел как успех)
 - **Панель без падений**: `toggleButton`/`dropDownBorder` → `PART_` (шаблон), удалены мёртвые `FindName('txtLogFilter'/'txtWhatsNew'/'btnCopyLog'/'btnClearLog'/'btnOpenReleases')` — `bug-hunt4 8 → 0`, гейты `860/860`

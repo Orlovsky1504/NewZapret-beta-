@@ -1,9 +1,9 @@
 {
-  "version": "3.0.8",
+  "version": "3.0.9",
   "published": "2026-11-21",
-  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.8/zapret-discord-youtube-3.0.8.zip",
-  "sha256": "18205c24ef3fe5d414565a76c100181f0d1cf5ec10ef86624e1f80acf1b9188a",
+  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.9/zapret-discord-youtube-3.0.9.zip",
+  "sha256": "7250e240887a9aa072cec034010739cb5cd74de0c8809eb8191dd78dd3f4e25b",
   "notes": [
-    "Фикс службы (не глотает ошибки) + XAML чистка"
+    "Профили 1-клик на главной (хаос)"
   ]
 }
