@@ -27,6 +27,7 @@ jobs:
           $cmds = Get-Command -Module Zapret | Measure-Object
           Write-Host "exported commands: $($cmds.Count)"
           if ($cmds.Count -lt 10) { throw "too few exported commands" }
+          Add-Type -AssemblyName PresentationFramework
           $w = [System.Windows.Window]
           Write-Host "WPF type loaded: $($w.Assembly.GetName().Version)"
           foreach ($a in @('version','status','list','help')) {
