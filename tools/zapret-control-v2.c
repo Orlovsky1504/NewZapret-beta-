@@ -93,11 +93,11 @@ static HWND ShowSplash(void){
 
 // единый цикл ожидания панели
 static void WaitForPanel(HANDLE hProc, const wchar_t *where){
-    Log(L"WaitForPanel %s hProc=%p", where, hProc);
+    Log(L"WaitForPanel %ls hProc=%p", where, hProc);
     for(int i=0;i<100;i++){ // 10с
         Sleep(100);
         HWND panel=FindWindowW(NULL, L"OpenZapret");
-        if(panel && IsWindowVisible(panel)){
+        if(panel && panel!=g_splash && IsWindowVisible(panel)){
             Log(L"Panel found after %d*100ms handle=%p", i, panel);
             if(g_splash){ DestroyWindow(g_splash); g_splash=NULL; }
             // дать панели выйти на передний план
@@ -138,7 +138,7 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE prev, PWSTR cmdLine, int show){
         // перезапишем лог каждый запуск? дописываем с разделителем
         FILE *f=_wfopen(g_logPath,L"a, ccs=UTF-8"); if(f){ fwprintf(f,L"\n=== Launch %lu ===\n", GetTickCount()); fclose(f); }
     }
-    Log(L"Launcher v3 start cmdLine=%s", cmdLine?cmdLine:L"");
+    Log(L"Launcher v3 start cmdLine=%ls", cmdLine?cmdLine:L"");
     g_mutex=CreateMutexW(NULL,FALSE,MUTEX_NAME);
     if(GetLastError()==ERROR_ALREADY_EXISTS){
         Log(L"Mutex exists - second instance");
@@ -151,9 +151,9 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE prev, PWSTR cmdLine, int show){
     }
     if(!GetModuleFileNameW(NULL,modPath,MAX_PATH)){ ShowError(L"Не удалось определить путь приложения."); return 1; }
     wchar_t *slash=wcsrchr(modPath,L'\\'); if(slash) *slash=L'\0';
-    Log(L"modPath=%s", modPath);
+    Log(L"modPath=%ls", modPath);
     _snwprintf(scriptPath,MAX_PATH,L"%s\\Zapret-Control.ps1",modPath);
-    Log(L"scriptPath=%s", scriptPath);
+    Log(L"scriptPath=%ls", scriptPath);
     if(GetFileAttributesW(scriptPath)==INVALID_FILE_ATTRIBUTES){
         ShowError(L"Не найден Zapret-Control.ps1 рядом с приложением.\nРаспакуйте архив полностью в одну папку.");
         return 1;
@@ -161,7 +161,7 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE prev, PWSTR cmdLine, int show){
     UINT len=GetWindowsDirectoryW(psPath,MAX_PATH);
     if(len==0||len>=MAX_PATH-64){ ShowError(L"Не найден Windows."); return 1; }
     _snwprintf(psPath+len,MAX_PATH-len,L"\\System32\\WindowsPowerShell\\v1.0\\powershell.exe");
-    Log(L"psPath=%s", psPath);
+    Log(L"psPath=%ls", psPath);
     if(GetFileAttributesW(psPath)==INVALID_FILE_ATTRIBUTES){ ShowError(L"Не найден PowerShell 5.1."); return 1; }
 
     g_splash=ShowSplash();
@@ -206,14 +206,14 @@ int WINAPI wWinMain(HINSTANCE inst, HINSTANCE prev, PWSTR cmdLine, int show){
     // уже админ — CreateProcess
     Log(L"CreateProcess direct");
     _snwprintf(args,2048,L"\"%s\" -NoLogo -NoProfile -STA -ExecutionPolicy Bypass -File \"%s\"",psPath,scriptPath);
-    Log(L"args=%s", args);
+    Log(L"args=%ls", args);
     STARTUPINFOW si={sizeof(si)}; si.dwFlags=STARTF_USESHOWWINDOW; si.wShowWindow=SW_HIDE;
     PROCESS_INFORMATION pi={0};
     if(!CreateProcessW(NULL, args, NULL,NULL,FALSE,0,NULL,modPath,&si,&pi)){
         DWORD err=GetLastError();
         Log(L"CreateProcess FAIL err=%lu", err);
         if(g_splash) DestroyWindow(g_splash);
-        wchar_t buf[512]; _snwprintf(buf,512,L"Не удалось запустить PowerShell (ошибка %lu).\nЛог: %s", err, g_logPath);
+        wchar_t buf[512]; _snwprintf(buf,512,L"Не удалось запустить PowerShell (ошибка %lu).\nЛог: %ls", err, g_logPath);
         ShowError(buf); return 1;
     }
     Log(L"CreateProcess OK pid=%lu hProcess=%p", pi.dwProcessId, pi.hProcess);

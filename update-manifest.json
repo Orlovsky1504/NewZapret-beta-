@@ -1,9 +1,9 @@
 {
-  "version": "3.0.1",
+  "version": "3.0.2",
   "published": "2026-11-21",
-  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.1/zapret-discord-youtube-3.0.1.zip",
+  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.2/zapret-discord-youtube-3.0.2.zip",
   "sha256": "ad3bf7e70b33b692dad7dd8ddf93900b1292d76046f26b04dba23aeeaf11f840",
   "notes": [
-    "Исправлен лаунчер: логирование и ожидание панели"
+    "Фикс сплэша: панель детектится корректно"
   ]
 }
