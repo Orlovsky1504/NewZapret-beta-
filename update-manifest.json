@@ -1,9 +1,9 @@
 {
-  "version": "3.0.3",
+  "version": "3.0.4",
   "published": "2026-11-21",
-  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.3/zapret-discord-youtube-3.0.3.zip",
+  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.4/zapret-discord-youtube-3.0.4.zip",
   "sha256": "a40c72d4822aac78ba3d24abe10dcb3009376829238ede3632263ba6de1b7f90",
   "notes": [
-    "Диагностика PS логом"
+    "Простой лаунчер без сплэша"
   ]
 }

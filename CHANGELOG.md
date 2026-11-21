@@ -1,4 +1,8 @@
-﻿## 3.0.3 — 2026-11-21 — PS Log
+﻿## 3.0.4 — 2026-11-21 — Простой лаунчер
+
+- **Переписан лаунчер**: убран сплэш/mutex/SCM/ожидание панели, только `ShellExecuteEx runas` → `powershell -File Zapret-Control.ps1`, `SW_SHOWNORMAL`, fallback без `runas` — код 1 больше не появляется
+
+## 3.0.3 — 2026-11-21 — PS Log
 
 - **Диагностика**: лаунчер пишет PowerShell вывод в `%TEMP%\OpenZapret-PS.log` (`*>`), детальный `TokenElevation`, фикс `modPath` логов
 
