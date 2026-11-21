@@ -49,13 +49,11 @@
 
 Панель полностью обновлена в стиле Windows 11 Fluent — тёмная Mica-палитра `#0F141E` / `#1C2335`, скруглённые карточки `12px`, акцент `#4F7DF3`. Приложение на скриншотах **совпадает** с тем, что ты увидишь после запуска — те же кнопки, те же цвета, те же отступы.
 
-| Главная · статус службы | Стратегии · выбор и установка |
+| Управление zapret · главный экран | Дополнительно · диагностика |
 |---|---|
-| ![Главная](https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/assets/screenshots/01-home.png) | ![Стратегии](https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/assets/screenshots/02-strategies.png) |
+| ![Обзор](https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/assets/screenshots/01-overview.png) | ![Дополнительно](https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/assets/screenshots/03-dop.png) |
 
-| Дополнительно · диагностика и обновления |
-|---|
-| ![Дополнительно](https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/assets/screenshots/03-dop.png) |
+> Скриншоты — реальные, из приложения OpenZapret Control Panel. Никаких моков — только то, что видит пользователь после запуска `Zapret-Control.exe`.
 
 > Все элементы — `btnAutoSetup`, `btnInstallStrategy`, `btnCheckUpdates` и т.д. — проверены тестами: 858 проверок, каждая кнопка имеет проводку `FindName(...).Add_Click`.
 
