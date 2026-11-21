@@ -48,7 +48,7 @@ function Save-RollbackSnapshot {
 
         try {
             $all = @(Get-ChildItem -LiteralPath $LogDir -Directory -Filter 'rollback-*' -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending)
-            foreach ($old in @($all | Select-Object -Skip $Keep)) {
+            foreach ($old in @($all | Where-Object { $_.Name -notlike '*-before-rollback' } | Select-Object -Skip $Keep)) {
                 Remove-Item -LiteralPath $old.FullName -Recurse -Force -ErrorAction SilentlyContinue
             }
         } catch { }
@@ -116,7 +116,7 @@ function Restore-RollbackSnapshot {
         if (Test-Path -LiteralPath $IpsetFile) { Copy-Item -LiteralPath $IpsetFile -Destination (Join-Path $safety 'ipset-all.txt') -Force }
         if ($HostsPath -and (Test-Path -LiteralPath $HostsPath)) { Copy-Item -LiteralPath $HostsPath -Destination (Join-Path $safety 'hosts') -Force }
         Write-Info2 ("Текущее состояние сохранено в {0}" -f $safety)
-    } catch { }
+    } catch { Write-Log ("Rollback safety backup failed: {0}" -f $_.Exception.Message) 'WARN' }
 
     $restored = @()
     $snapIpset = Join-Path $rb.folder 'ipset-all.txt'
@@ -173,13 +173,14 @@ function Invoke-ZapretServiceRestartPrompt {
     if ($conflictItems.Count -gt 0) {
         Write-Warn2 (Get-UiText -Russian ('Возможные конфликты: {0}' -f ($conflictItems -join '; ')) -English ('Possible conflicts: {0}' -f ($conflictItems -join '; ')))
     }
-    $verb = if ($info.WinwsRunning) { 'перезапустить службу zapret' } else { 'запустить службу zapret' }
+    $restartService = [bool]$info.WinwsRunning
+    $verb = if ($restartService) { 'перезапустить службу zapret' } else { 'запустить службу zapret' }
     $answer = $null
     if (Get-ZapretNonInteractive) {
         # the GUI confirms before calling; treat the prompt as accepted
         $answer = 'y'
     } else {
-        try { $answer = Read-Host (Get-UiText -Russian ("  {0}: {1} сейчас? [д/н]" -f $Reason, $(if ($verb -eq 'restart') { 'перезапустить службу' } else { 'установить изменения' })) -English ("  {0}: {1} now? [y/N]" -f $Reason, ($verb.Substring(0,1).ToUpper() + $verb.Substring(1)))) } catch { return $false }
+        try { $answer = Read-Host (Get-UiText -Russian ("  {0}: {1} сейчас? [д/н]" -f $Reason, $(if ($restartService) { 'перезапустить службу' } else { 'установить изменения' })) -English ("  {0}: {1} now? [y/N]" -f $Reason, $(if ($restartService) { 'restart the service' } else { 'apply the changes' }))) } catch { return $false }
     }
     if (-not [string]::IsNullOrWhiteSpace($answer) -and ($answer.Trim() -notmatch '^(y|yes|д|да)$')) {
         Write-Info2 'Не перезапущено. Изменения вступят в силу после перезапуска службы.'
@@ -464,7 +465,7 @@ function Set-BypassProfile {
     $domains = @()
     if ($Profile -ne 'all') { $domains = @(Get-ProfileExcludeDomains -Profile $Profile) }
     $outLines = New-Object 'System.Collections.Generic.List[string]'
-    foreach ($l in $kept) { if (-not [string]::IsNullOrWhiteSpace($l)) { $outLines.Add($l) } }
+    foreach ($l in $kept) { $outLines.Add($l) }
     if ($domains.Count -gt 0) {
         $outLines.Add(('{0}: {1} >>>' -f $script:ManagedProfileBeginPrefix, $Profile))
         foreach ($d in $domains) { $outLines.Add([string]$d) }
