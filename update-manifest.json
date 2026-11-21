@@ -1,9 +1,9 @@
 {
-  "version": "2.9.11",
+  "version": "2.9.12",
   "published": "2026-11-21",
-  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/v2.9.11/zapret-discord-youtube-2.9.11.zip",
-  "sha256": "1977d44d314a5b1932f08993ff3d8d7cc6f527f339ac4ad590142e1a7d7c64e7",
+  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/v2.9.12/zapret-discord-youtube-2.9.12.zip",
+  "sha256": "ccaa0b65375a4086df017f9f33e7a41c9359e0f8d8c49a58569ce2305baa09da",
   "notes": [
-    "Интерфейс полностью обновлён в стиле Windows 11 Fluent: окно #0F141E, карточки #1C2335, скругления 12px, шрифт Segoe Variable — приложение совпадает со скриншотами в README,Добавлены скриншоты панели (Главная, Стратегии, Дополнительно) и раздел VirusTotal с SHA-256 для проверки подлинности"
+    "Исправлено: кнопка Запустить службу теперь чинит сломанную службу переустановкой текущей стратегии, если быстрый старт не сработал"
   ]
 }
