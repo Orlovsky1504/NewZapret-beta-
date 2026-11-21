@@ -1,10 +1,10 @@
 {
-  "version": "2.9.3",
+  "version": "2.9.4",
   "published": "2026-11-21",
-  "zipUrl": "https://github.com/Orlovsky1504/NewZapret-beta-/releases/download/v2.9.3/zapret-discord-youtube-2.9.3.zip",
-  "sha256": "d08886abedb2433ef72ec9e79ee902cef7d8d3d6238b4c1395f415f089e253dc",
+  "zipUrl": "https://github.com/Orlovsky1504/NewZapret-beta-/releases/download/v2.9.4/zapret-discord-youtube-2.9.4.zip",
+  "sha256": "f877ee04ef7ef85c1bce8fc59bc064f17bd0c6c766e95c32941fe1777f87ad30",
   "notes": [
-    "Исправлено: сбой запуска фоновой проверки обновлений больше не проглатывается — причина видна в журнале и диалоге.",
-    "Исправлена утечка: открытый runspace корректно освобождается при исключении при запуске проверки обновлений."
+    "Исправлено: определение прокси-переменных на Windows больше не показывает дубли (переменные Windows регистронезависимы).",
+    "Улучшено: полный прогон тестов и запуск CLI теперь выполняются на настоящей Windows в CI (PowerShell 5.1 и 7)."
   ]
 }
