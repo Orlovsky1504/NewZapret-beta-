@@ -1485,7 +1485,7 @@ function Update-ControlPageState {
             $script:CmbFakesGame.DisplayMemberPath = 'BaseName'
         }
     } catch { }
-    $script:TxtMoreState.Text = ('{0}   ·   откат: {1}' -f $fakesText, $rbText)
+    if ($script:TxtMoreState) { $script:TxtMoreState.Text = ('{0}   ·   откат: {1}' -f $fakesText, $rbText) }
 }
 
 function Update-WizardProgress {
