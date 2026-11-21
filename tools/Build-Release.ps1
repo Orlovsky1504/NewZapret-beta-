@@ -193,6 +193,28 @@ try {
         }
         Copy-Item -LiteralPath $sourcePath -Destination $destinationPath
     }
+    # --- EOL normalization per .gitattributes (fixes 20-versions mismatch local LF vs CI CRLF) ---
+    $crlfExts = @('.ps1','.psm1','.bat','.txt','.md')
+    $lfExts = @('.json')
+    foreach ($staged in (Get-ChildItem -LiteralPath $staging -File -Recurse -Force)) {
+        $ext = $staged.Extension.ToLowerInvariant()
+        if ($crlfExts -contains $ext) {
+            $bytes = [IO.File]::ReadAllBytes($staged.FullName)
+            if ($bytes.Length -eq 0) { continue }
+            $hasBom = ($bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF)
+            $text = if ($hasBom) { [Text.Encoding]::UTF8.GetString($bytes, 3, $bytes.Length - 3) } else { [Text.Encoding]::UTF8.GetString($bytes) }
+            # Normalize: LF -> CRLF (but keep existing CRLF, avoid CRCRLF)
+            $text = $text -replace "(?<!\r)\n", "`r`n"
+            $out = if ($hasBom) { (New-Object Text.UTF8Encoding($true)).GetPreamble() + [Text.Encoding]::UTF8.GetBytes($text) } else { [Text.Encoding]::UTF8.GetBytes($text) }
+            [IO.File]::WriteAllBytes($staged.FullName, $out)
+        } elseif ($lfExts -contains $ext) {
+            $bytes = [IO.File]::ReadAllBytes($staged.FullName)
+            if ($bytes.Length -eq 0) { continue }
+            $text = [Text.Encoding]::UTF8.GetString($bytes)
+            $text = $text -replace "\r\n", "`n"
+            [IO.File]::WriteAllBytes($staged.FullName, [Text.Encoding]::UTF8.GetBytes($text))
+        }
+    }
 
     Add-Type -AssemblyName System.IO.Compression.FileSystem
     $zipArchive = $null

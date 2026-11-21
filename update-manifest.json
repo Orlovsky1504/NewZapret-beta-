@@ -1,9 +1,9 @@
 {
-  "version": "3.0.16",
+  "version": "3.0.17",
   "published": "2026-11-21",
-  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.16/zapret-discord-youtube-3.0.16.zip",
-  "sha256": "a6fb29a6722085da070b88a774cdfe5c714fa9d880f555188f3b2b76fbc3d79a",
+  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.17/zapret-discord-youtube-3.0.17.zip",
+  "sha256": "19f722fb1c41fde778d1b3fe579601f6d0db3a4e47d829676ff5bf26820ec8da",
   "notes": [
-    "Фикс SHA fallback + детерминированный ZIP"
+    "Детерминированный ZIP + EOL фикс (20 версий)"
   ]
 }
