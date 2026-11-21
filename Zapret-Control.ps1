@@ -2929,7 +2929,7 @@ $window.FindName('btnUninstall').Add_Click({
 })
 
 $script:StatusTimer = New-Object System.Windows.Threading.DispatcherTimer
-$script:StatusTimer.Interval = [TimeSpan]::FromSeconds(8)
+$script:StatusTimer.Interval = [TimeSpan]::FromSeconds(30)
 $script:StatusTimer.Add_Tick({ Refresh-ControlStatus })
 $script:WizardTimer = New-Object System.Windows.Threading.DispatcherTimer
 $script:WizardTimer.Interval = [TimeSpan]::FromMilliseconds(500)

@@ -1,9 +1,9 @@
 {
-  "version": "2.9.20",
+  "version": "2.9.21",
   "published": "2026-11-21",
-  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/2.9.20/zapret-discord-youtube-2.9.20.zip",
-  "sha256": "a8a7877daebf721507314518b9fa77c6a8282173470cfde8c3abd0b2bac87869",
+  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/2.9.21/zapret-discord-youtube-2.9.21.zip",
+  "sha256": "709d0b11955ccbe9e888ef093ba903b2571a9d5669ae81fdfb87889a9e437e42",
   "notes": [
-    "Ускорен запуск — окно показывается мгновенно"
+    "Ускорен старт, манифест починен"
   ]
 }
