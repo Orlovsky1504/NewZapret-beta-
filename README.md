@@ -18,7 +18,8 @@
 [![Версия](https://img.shields.io/badge/версия-2.9.8-4F7DF3?style=for-the-badge)](https://github.com/Orlovsky1504/NewZapret-beta-/releases/download/v2.9.8/zapret-discord-youtube-2.9.8.zip)
 [![Open Source](https://img.shields.io/badge/open--source-да-51D6A5?style=for-the-badge)](#-открытый-код)
 [![Платформа](https://img.shields.io/badge/platform-Windows%2010%2F11-91A0B8?style=for-the-badge)](#-установка)
-[![Тесты](https://img.shields.io/badge/тестов-857-F5B95F?style=for-the-badge)](#-для-разработчиков)
+[![Тесты](https://img.shields.io/badge/тестов-858-F5B95F?style=for-the-badge)](#-для-разработчиков)
+[![AI](https://img.shields.io/badge/разработка-AI--assisted-9B59B6?style=for-the-badge)](#-открытый-код)
 
 [⬇️ Скачать](https://github.com/Orlovsky1504/NewZapret-beta-/releases/download/v2.9.8/zapret-discord-youtube-2.9.8.zip) · [📦 Все релизы](https://github.com/Orlovsky1504/NewZapret-beta-/releases) · [🚀 Установка](#-установка) · [🔄 Автообновления](#-автообновления) · [💙 Открытый код](#-открытый-код)
 
@@ -89,6 +90,10 @@ NewZapret/
 Каждый релиз публикуется двумя файлами: `zapret-discord-youtube-<версия>.zip` и `update-manifest.json`.
 
 ## 💙 Открытый код
+
+
+> **При создании проекта активно используется ИИ.** Нейросети помогают писать и проверять код, но каждое изменение проходит проверку тестами (858 проверок) и CI на Linux и настоящей Windows — слова нейросетей не являются доказательством, доказательство — зелёные тесты.
+
 
 **NewZapret — проект с открытым исходным кодом (open source), лицензия [MIT](LICENSE.txt).** Код лежит в этом репозитории — смотри, изучай, дорабатывай, делись с другими.
 
