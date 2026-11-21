@@ -1,9 +1,9 @@
 {
-  "version": "3.0.11",
+  "version": "3.0.12",
   "published": "2026-11-21",
-  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.11/zapret-discord-youtube-3.0.11.zip",
-  "sha256": "976e2a62abfd0efa5740e7d9c54d60089d625ab32a53845d87f519d13a6b48ec",
+  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.12/zapret-discord-youtube-3.0.12.zip",
+  "sha256": "14b30b4d2c181ea373afe649867d9ed1d6a7fc931ac5ddcb1fb32f2a79547250",
   "notes": [
-    "Фикс самообновления в панели (sha фолбэк)"
+    "Фикс wiring Stop-Zapret"
   ]
 }

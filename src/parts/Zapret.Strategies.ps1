@@ -574,7 +574,7 @@ function Install-ZapretService {
     [void](Stop-Zapret)
     if (-not (Wait-ZapretServiceState -Name 'zapret' -DesiredState 'Absent' -TimeoutSec 10)) {
         Write-Log 'Anti-stuck: служба не удалилась, убиваю winws.exe этой установки и пробую снова' 'WARN'
-        try { [void](Stop-Zapret -Quiet) } catch { }
+        try { [void](Stop-Zapret) } catch { }
         Start-Sleep -Milliseconds 800
         & (Get-WindowsSystemToolPath -Name 'sc.exe') delete zapret 2>&1 | Out-Null
         if (-not (Wait-ZapretServiceState -Name 'zapret' -DesiredState 'Absent' -TimeoutSec 5)) {
