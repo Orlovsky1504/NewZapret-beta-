@@ -2,7 +2,7 @@
   "version": "3.0.11",
   "published": "2026-11-21",
   "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.11/zapret-discord-youtube-3.0.11.zip",
-  "sha256": "976e2a62abfd0efa5740e7d9c54d60089d625ab32a53845d87f519d13a6b48ec",
+  "sha256": "bc9d6ef552110353ae99186af2095ec3bd5d15bf3168e8402435a259f66b49ee",
   "notes": [
     "Фикс самообновления в панели (sha фолбэк)"
   ]
