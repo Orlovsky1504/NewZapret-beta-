@@ -1,0 +1,11 @@
+{
+  "version": "2.9.2",
+  "published": "2026-11-18",
+  "zipUrl": "https://raw.githubusercontent.com/Orlovsky1504/NewZapret-beta-/main/zapret-discord-youtube-2.9.2.zip",
+  "sha256": "d80f9b538161e0dca5a3a156e3e4515235f6a51d186d312b39524fdfa4efa341",
+  "notes": [
+    "Новое: автообновления подключены к репозиторию проекта на GitHub (Orlovsky1504/NewZapret-beta-) — источник обновлений настроен по умолчанию, отдельная настройка не нужна",
+    "Новое: сборка релиза автоматически готовит update-manifest.json (версия, ссылка на ZIP, SHA-256, заметки) — для публикации нужно залить два файла: ZIP и манифест",
+    "Проверено: 857/857"
+  ]
+}
