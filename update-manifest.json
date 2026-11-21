@@ -1,10 +1,9 @@
 {
-  "version": "2.9.18",
+  "version": "2.9.19",
   "published": "2026-11-21",
-  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/2.9.18/zapret-discord-youtube-2.9.18.zip",
+  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/2.9.19/zapret-discord-youtube-2.9.19.zip",
   "sha256": "a8a7877daebf721507314518b9fa77c6a8282173470cfde8c3abd0b2bac87869",
   "notes": [
-    "Добавлено: поиск/фильтр по журналу + кнопки Копировать/Очистить",
-    "Добавлено: страница Что нового — последние 3 версии из CHANGELOG прямо в панели"
+    "Ускорен запуск — окно показывается мгновенно"
   ]
 }

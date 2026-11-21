@@ -914,6 +914,14 @@ function Update-WatchdogCard {
     } catch { }
 }
 
+function Refresh-ControlStatusLight {
+    # Лёгкий статус — только служба (быстро), остальное отложено 400мс
+    try {
+        $s=Get-ZapretServiceInfo; $script:TxtServiceState.Text=if($s.Installed -and $s.State -eq 'Running'){'Работает'}elseif($s.Installed){'Остановлена'}elseif($s.WinwsRunning){'Ручной запуск'}else{'Не настроена'}
+        $script:TxtToast.Text='Статус обновлён: '+(Get-Date -Format 'HH:mm:ss')
+        $d=New-Object System.Windows.Threading.DispatcherTimer; $d.Interval=[TimeSpan]::FromMilliseconds(400); $d.Add_Tick({ $d.Stop(); try{Refresh-ControlStatus}catch{} }); $d.Start()
+    } catch { try{Refresh-ControlStatus}catch{} }
+}
 function Refresh-ControlStatus {
     try {
         $service = Get-ZapretServiceInfo
@@ -2929,7 +2937,7 @@ $window.FindName('btnUninstall').Add_Click({
 })
 
 $script:StatusTimer = New-Object System.Windows.Threading.DispatcherTimer
-$script:StatusTimer.Interval = [TimeSpan]::FromSeconds(8)
+$script:StatusTimer.Interval = [TimeSpan]::FromSeconds(60)
 $script:StatusTimer.Add_Tick({ Refresh-ControlStatus })
 $script:WizardTimer = New-Object System.Windows.Threading.DispatcherTimer
 $script:WizardTimer.Interval = [TimeSpan]::FromMilliseconds(500)
@@ -2938,6 +2946,7 @@ $script:UpdateProbeTimer = New-Object System.Windows.Threading.DispatcherTimer
 $script:UpdateProbeTimer.Interval = [TimeSpan]::FromMilliseconds(700)
 $script:UpdateProbeTimer.Add_Tick({ Complete-UpdateOfferProbe })
 $window.Add_ContentRendered({
+    $script:TxtServiceState.Text='Загрузка...'; $script:TxtServiceDetail.Text='Проверяю службу...';
     Refresh-ControlStatus
     $script:StatusTimer.Start()
     try { if ((Get-Config).checkUpdates) { Start-UpdateOfferProbe } } catch { Start-UpdateOfferProbe }
