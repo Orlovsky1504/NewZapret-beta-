@@ -1,9 +1,9 @@
 {
-  "version": "2.9.12",
+  "version": "2.9.13",
   "published": "2026-11-21",
-  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/v2.9.12/zapret-discord-youtube-2.9.12.zip",
-  "sha256": "ccaa0b65375a4086df017f9f33e7a41c9359e0f8d8c49a58569ce2305baa09da",
+  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/v2.9.13/zapret-discord-youtube-2.9.13.zip",
+  "sha256": "04a1607491426622b770d38562b5cd26c20eb1e21b96cda56241f351f249fc33",
   "notes": [
-    "Исправлено: кнопка Запустить службу теперь чинит сломанную службу переустановкой текущей стратегии, если быстрый старт не сработал"
+    "Исправлено: кнопки Автопроверка и Автоустановка теперь всегда показывают включена/выключена даже при ошибке GameFilter, обновление авто-закрывает панель/трей чтобы не падать с кодом 1"
   ]
 }
