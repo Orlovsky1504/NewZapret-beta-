@@ -1,0 +1,42 @@
+name: Capture Proof Screenshots
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'Zapret-Control.ps1'
+      - 'tools/Capture-Screenshots.ps1'
+      - '.github/workflows/capture.yml'
+
+jobs:
+  capture:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Render WPF to PNG (PowerShell 5.1 STA)
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          powershell -STA -NoProfile -File tools/Capture-Screenshots.ps1 -OutDir assets/screenshots
+          dir assets/screenshots\ci-*.png | Format-Table Name, Length
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-screenshots
+          path: assets/screenshots/ci-*.png
+          retention-days: 7
+
+      - name: Commit back if on main
+        shell: powershell
+        run: |
+          git config user.name "NewZapret CI"
+          git config user.email "newzapret-ci@users.noreply.github.com"
+          $has = (git status --porcelain assets/screenshots/ci-*.png 2>$null)
+          if (-not $has) { Write-Host "no new png to commit"; exit 0 }
+          git add assets/screenshots/ci-*.png
+          git commit -m "docs: CI proof screenshots (RenderTargetBitmap on windows-latest)"
+          git push origin HEAD:main
