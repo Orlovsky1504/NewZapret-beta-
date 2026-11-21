@@ -2504,7 +2504,7 @@ $window.FindName('btnStrategyCompareApplyBest').Add_Click({
     if(-not (Confirm-ControlAction ('Применить лучшую стратегию '+$best+'? Служба перезапустится.'))){ return }
     Start-ControlAction -Title ('Применение '+$best) -Action {
         param($StrategyId)
-        Set-UserStrategy -StrategyId $StrategyId | Out-Null
+        Install-ZapretService -StrategyId $StrategyId | Out-Null
         Write-Host ('Применена: '+$StrategyId) -ForegroundColor Green
         [void](Invoke-ZapretServiceRestartPrompt -Reason 'Стратегия из сравнения')
     } -ArgumentList @($best)

@@ -1,4 +1,8 @@
-﻿## 3.0.6 — 2026-11-21 — Без консоли
+﻿## 3.0.7 — 2026-11-21 — Фикс ApplyBest
+
+- **Багхант**: `btnStrategyCompareApplyBest` вызывал несуществующий `Set-UserStrategy` → `Unknown command` (wiring 1/4145). Заменён на `Install-ZapretService -StrategyId` — кнопка «Применить лучшую» теперь работает
+
+## 3.0.6 — 2026-11-21 — Без консоли
 
 - **Убрана консоль**: `-WindowStyle Hidden` + `SW_HIDE`, фоновая консоль PowerShell больше не висит за панелью
 
