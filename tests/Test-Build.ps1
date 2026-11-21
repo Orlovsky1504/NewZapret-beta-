@@ -1988,6 +1988,8 @@ $repoManifestCheck = ConvertTo-ZapretUpdateManifest -Raw ($repoManifestText | Co
 Check 'repo update-manifest.json is valid' ($repoManifestCheck.Ok -and $repoManifestCheck.Manifest.Sha256 -match '^[A-F0-9]{64}$')
 Check 'repo update-manifest version tracks version.txt' ($repoManifestCheck.Manifest.Version -eq ([IO.File]::ReadAllText((Join-Path $repoRoot '.service\version.txt'))).Trim())
 Check 'root version.txt tracks .service/version.txt' (([IO.File]::ReadAllText((Join-Path $repoRoot 'version.txt'))).Trim() -eq ([IO.File]::ReadAllText((Join-Path $repoRoot '.service\version.txt'))).Trim())
+$readmeBadgeVer = [regex]::Match([IO.File]::ReadAllText((Join-Path $repoRoot 'README.md')), 'badge/версия-(\d+\.\d+\.\d+[a-z]?)-').Groups[1].Value
+Check 'README version badge tracks .service/version.txt' ($readmeBadgeVer -eq ([IO.File]::ReadAllText((Join-Path $repoRoot '.service\version.txt'))).Trim())
 Check 'update offer without feed is honest about configuration' (-not (Get-ZapretUpdateOffer).Configured -and (Get-ZapretUpdateOffer).Error -match 'updateFeed')
 $defaultsProbePath = Join-Path ([IO.Path]::GetTempPath()) ('zapret-defaults-' + [Guid]::NewGuid().ToString('N') + '.json')
 $defaultsProbe = Get-Config -Path $defaultsProbePath
