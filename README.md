@@ -15,14 +15,14 @@
 <br/>
 <br/>
 
-[![Версия](https://img.shields.io/badge/версия-2.9.13-4F7DF3?style=for-the-badge)](https://github.com/Orlovsky1504/OpenZapret/releases/download/2.9.13/zapret-discord-youtube-2.9.13.zip)
+[![Версия](https://img.shields.io/badge/версия-2.9.14-4F7DF3?style=for-the-badge)](https://github.com/Orlovsky1504/OpenZapret/releases/download/2.9.13/zapret-discord-youtube-2.9.14.zip)
 [![Open Source](https://img.shields.io/badge/open--source-да-51D6A5?style=for-the-badge)](#-открытый-код)
 [![Платформа](https://img.shields.io/badge/platform-Windows%2010%2F11-91A0B8?style=for-the-badge)](#-установка)
 [![Тесты](https://img.shields.io/badge/тестов-858-F5B95F?style=for-the-badge)](#-для-разработчиков)
 [![VirusTotal](https://img.shields.io/badge/VirusTotal-проверено-2EA043?style=for-the-badge)](#️-безопасность--virustotal)
 [![AI](https://img.shields.io/badge/разработка-AI--assisted-9B59B6?style=for-the-badge)](#-открытый-код)
 
-[⬇️ Скачать](https://github.com/Orlovsky1504/OpenZapret/releases/download/2.9.13/zapret-discord-youtube-2.9.13.zip) · [📦 Все релизы](https://github.com/Orlovsky1504/OpenZapret/releases) · [🚀 Установка](#-установка) · [🔄 Автообновления](#-автообновления) · [💙 Открытый код](#-открытый-код)
+[⬇️ Скачать](https://github.com/Orlovsky1504/OpenZapret/releases/download/2.9.13/zapret-discord-youtube-2.9.14.zip) · [📦 Все релизы](https://github.com/Orlovsky1504/OpenZapret/releases) · [🚀 Установка](#-установка) · [🔄 Автообновления](#-автообновления) · [💙 Открытый код](#-открытый-код)
 
 </div>
 
@@ -75,7 +75,7 @@
 ## 🚀 Установка
 
 
-1. **Скачай** [последний архив](https://github.com/Orlovsky1504/OpenZapret/releases/download/2.9.13/zapret-discord-youtube-2.9.13.zip)
+1. **Скачай** [последний архив](https://github.com/Orlovsky1504/OpenZapret/releases/download/2.9.13/zapret-discord-youtube-2.9.14.zip)
 2. **Распакуй** в любую папку (например `C:\zapret`) — *не в «Загрузки» и не на рабочий стол системы*
 3. **Запусти `Zapret-Control.exe`** и подтверди права администратора — они нужны для управления обходом
 4. Нажми **«Автонастройка»** — мастер сам подберёт стратегию и всё настроит
@@ -102,7 +102,7 @@
 
 | Что | SHA256 | VirusTotal |
 |---|---|---|
-| ZIP `zapret-discord-youtube-2.9.13.zip` | `04a1607491426622b770d38562b5cd26c20eb1e21b96cda56241f351f249fc33` | [открыть](https://www.virustotal.com/gui/file/04a1607491426622b770d38562b5cd26c20eb1e21b96cda56241f351f249fc33) |
+| ZIP `zapret-discord-youtube-2.9.14.zip` | `04a1607491426622b770d38562b5cd26c20eb1e21b96cda56241f351f249fc33` | [открыть](https://www.virustotal.com/gui/file/04a1607491426622b770d38562b5cd26c20eb1e21b96cda56241f351f249fc33) |
 | `Zapret-Control.exe` | `c01b16d7c461705ccdf5ccec6b9089e926ae5c8a86a51368ab955bec61fa6c74` | [открыть](https://www.virustotal.com/gui/file/c01b16d7c461705ccdf5ccec6b9089e926ae5c8a86a51368ab955bec61fa6c74) |
 | `Zapret-Tray.exe` | `b8236432a360d046dfa41ac7782089d623c2bed21057a87d7c5f69e8548c7081` | [открыть](https://www.virustotal.com/gui/file/b8236432a360d046dfa41ac7782089d623c2bed21057a87d7c5f69e8548c7081) |
 | `bin/winws.exe` | `affb4f69d2ea302a7abccd5325d81826e140ddae014f1e070bc4a6c0dd555188` | [открыть](https://www.virustotal.com/gui/file/affb4f69d2ea302a7abccd5325d81826e140ddae014f1e070bc4a6c0dd555188) |
