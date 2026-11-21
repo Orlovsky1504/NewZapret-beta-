@@ -1,7 +1,7 @@
 {
-  "version": "2.9.14",
+  "version": "2.9.15",
   "published": "2026-11-21",
-  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/2.9.14/zapret-discord-youtube-2.9.14.zip",
+  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/2.9.15/zapret-discord-youtube-2.9.15.zip",
   "sha256": "a2beaa9d8cb760f3eb671b1cfefb174278dbca992b763ab19cc309ed951efb24",
   "notes": [
     "Исправлено: кнопки Автопроверка и Автоустановка теперь всегда показывают включена/выключена даже при ошибке GameFilter, обновление авто-закрывает панель/трей чтобы не падать с кодом 1"

@@ -410,6 +410,38 @@ function Stop-ZapretRuntimeForUpdate {
     foreach ($service in $driverServices) {
         $RuntimeState.DriverServices.Add([pscustomobject]@{ Name = [string]$service.Name; WasRunning = ([string]$service.State -ne 'Stopped') })
     }
+    # Закрываю панель/трей ПЕРВЫМ делом — они держат Zapret-Control.ps1/Update-Zapret.ps1
+    # (в 2.9.13 панель не закрывалась сама, из-за чего апдейт падал с кодом 1)
+    foreach ($leaf in @('Zapret-Control.exe','Zapret-Tray.exe')) {
+        $exePath = Join-Path $TargetRoot $leaf
+        if (-not (Test-Path -LiteralPath $exePath -PathType Leaf)) { continue }
+        try {
+            $comparable = $exePath
+            try { $comparable = [IO.Path]::GetFullPath($exePath).TrimEnd('\\','/') } catch { }
+            foreach ($proc in @(Get-Process -ErrorAction SilentlyContinue)) {
+                $pPath = $null
+                try { $pPath = $proc.Path } catch { continue }
+                if (-not $pPath) { continue }
+                $pComp = $pPath
+                try { $pComp = [IO.Path]::GetFullPath($pPath).TrimEnd('\\','/') } catch { }
+                if ([string]::Equals($pComp, $comparable, [StringComparison]::OrdinalIgnoreCase)) {
+                    Write-Host ("Закрываю $leaf (PID $($proc.Id)) для обновления...") -ForegroundColor Yellow
+                    try { $null = $proc.CloseMainWindow() } catch { }
+                    for ($w = 0; $w -lt 15; $w++) {
+                        if ($proc.HasExited) { break }
+                        Start-Sleep -Milliseconds 200
+                        try { $proc.Refresh() } catch { break }
+                    }
+                    if (-not $proc.HasExited) {
+                        try { Stop-Process -Id $proc.Id -Force -ErrorAction Stop } catch { }
+                        Start-Sleep -Milliseconds 500
+                    }
+                }
+            }
+        } catch { }
+    }
+    Start-Sleep -Milliseconds 300
+
     foreach ($service in $RuntimeState.Services) {
         if (-not $service.WasRunning) { continue }
         Write-Host ("Останавливаю службу '{0}', использующую этот winws.exe..." -f $service.Name) -ForegroundColor Yellow
@@ -427,29 +459,7 @@ function Stop-ZapretRuntimeForUpdate {
         Stop-Service -Name $service.Name -Force -ErrorAction Stop
         if (-not (Wait-ZapretServiceState -Name $service.Name -State 'Stopped' -TimeoutSec 15)) { throw "Драйвер-служба '$($service.Name)' не остановилась; файлы не заменены." }
     }
-    # Закрываю панель и трей этой установки, чтобы их exe не блокировали замену файлов
-    foreach ($leaf in @('Zapret-Control.exe','Zapret-Tray.exe')) {
-        $exePath = Join-Path $TargetRoot $leaf
-        if (-not (Test-Path -LiteralPath $exePath -PathType Leaf)) { continue }
-        try {
-            $comparable = $exePath
-            try { $comparable = [IO.Path]::GetFullPath($exePath).TrimEnd('\\','/') } catch { }
-            foreach ($proc in @(Get-Process -ErrorAction SilentlyContinue)) {
-                $pPath = $null
-                try { $pPath = $proc.Path } catch { continue }
-                if (-not $pPath) { continue }
-                $pComp = $pPath
-                try { $pComp = [IO.Path]::GetFullPath($pPath).TrimEnd('\\','/') } catch { }
-                if ([string]::Equals($pComp, $comparable, [StringComparison]::OrdinalIgnoreCase)) {
-                    Write-Host ("Закрываю $leaf (PID $($proc.Id)) для обновления...") -ForegroundColor Yellow
-                    try { $proc.CloseMainWindow() | Out-Null } catch { }
-                    Start-Sleep -Milliseconds 400
-                    if (-not $proc.HasExited) { Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue }
-                }
-            }
-        } catch { }
-    }
-    Start-Sleep -Milliseconds 500
+
 }
 
 function Restore-ZapretRuntimeAfterUpdate {
@@ -485,14 +495,17 @@ function Restore-ZapretRuntimeAfterUpdate {
 function Test-ZapretFileExclusiveAccess {
     [CmdletBinding()]
     param([Parameter(Mandatory = $true)][string]$Path, [Parameter(Mandatory = $true)][string]$RelativePath)
-    $stream = $null
-    try {
-        $stream = [IO.File]::Open($Path, [IO.FileMode]::Open, [IO.FileAccess]::ReadWrite, [IO.FileShare]::None)
-    } catch {
-        throw "Файл '$RelativePath' занят или недоступен. Ничего не заменено. Закройте использующую его программу и повторите."
-    } finally {
-        if ($stream) { $stream.Dispose() }
+    $lastError = $null
+    for ($attempt = 0; $attempt -lt 3; $attempt++) {
+        $stream = $null
+        try {
+            $stream = [IO.File]::Open($Path, [IO.FileMode]::Open, [IO.FileAccess]::ReadWrite, [IO.FileShare]::None)
+            return
+        } catch { $lastError = $_.Exception.Message }
+        finally { if ($stream) { $stream.Dispose() } }
+        if ($attempt -lt 2) { Start-Sleep -Milliseconds 1200 }
     }
+    throw "Файл '$RelativePath' занят или недоступен ($lastError). Ничего не заменено. Закройте использующую его программу и повторите."
 }
 
 function Test-ZapretDriverReplaceability {
