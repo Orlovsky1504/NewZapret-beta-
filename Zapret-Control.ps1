@@ -149,7 +149,7 @@ $xamlText = @'
         <Setter.Value>
           <ControlTemplate TargetType="ComboBox">
             <Grid>
-              <ToggleButton x:Name="toggleButton"
+              <ToggleButton x:Name="PART_toggleButton"
                             Focusable="False"
                             ClickMode="Press"
                             Background="{TemplateBinding Background}"
@@ -198,7 +198,7 @@ $xamlText = @'
                      AllowsTransparency="True"
                      PopupAnimation="Slide"
                      IsOpen="{TemplateBinding IsDropDownOpen}">
-                <Border x:Name="dropDownBorder"
+                <Border x:Name="PART_dropDownBorder"
                         Background="#10192B"
                         BorderBrush="#2A3953"
                         BorderThickness="1"
@@ -750,8 +750,9 @@ $script:TxtServiceState = $window.FindName('txtServiceState')
 $script:TxtServiceDetail = $window.FindName('txtServiceDetail')
 $script:TxtStrategy = $window.FindName('txtStrategy')
 $script:TxtIpState = $window.FindName('txtIpState')
-$script:TxtLogFilter = $window.FindName('txtLogFilter')
-$script:TxtWhatsNew = $window.FindName('txtWhatsNew')
+$script:TxtLogFilter = $null
+$script:TxtWhatsNew = $null
+# txtLogFilter/txtWhatsNew: UI elements removed — filtering and changelog shown via Activity log
 $script:TxtActivity = $window.FindName('txtActivity')
 $script:TxtToast = $window.FindName('txtToast')
 $script:TxtPageTitle = $window.FindName('txtPageTitle')
@@ -2042,14 +2043,7 @@ $window.FindName('navSites').Add_Click({ Set-ControlPage -Page sites })
 $window.FindName('navMore').Add_Click({ Set-ControlPage -Page more })
 $window.FindName('btnBackToWizard').Add_Click({ if ($script:WizardBusy) { Set-ControlPage -Page 'wizard' } })
 $window.FindName('btnWizCancel').Add_Click({ Stop-WizardRun })
-if ($el=$window.FindName('btnCopyLog')) { $el.Add_Click({ try { $txt=$script:TxtActivity.Text; if($txt){ [System.Windows.Clipboard]::SetText($txt); $script:TxtToast.Text='Скопировано в буфер' } } catch { Show-ControlError $_.Exception.Message } }) }
-if ($el=$window.FindName('btnClearLog')) { $el.Add_Click({ $script:ActivityEntries.Clear(); $script:ActivityEntries.Add('Журнал очищен.'); $script:TxtActivity.Text='Журнал очищен.' }) }
-if ($el=$window.FindName('txtLogFilter')) { $el.Add_TextChanged({
-    if (-not $script:TxtLogFilter) { return }; $f=$script:TxtLogFilter.Text.Trim(); if(-not $f){ $script:TxtActivity.Text=$script:ActivityEntries -join "`r`n"; return }
-    $filtered=@($script:ActivityEntries | Where-Object { $_ -like "*$f*" }); $script:TxtActivity.Text=if($filtered.Count){ $filtered -join "`r`n" } else { '(ничего не найдено)' }
-}) }
-if ($el=$window.FindName('btnOpenReleases')) { $el.Add_Click({ try { Start-Process 'https://github.com/Orlovsky1504/OpenZapret/releases' | Out-Null } catch {} }) }
-try { $cl=[IO.File]::ReadAllText((Join-Path $script:AppRoot 'CHANGELOG.md')); $m=[regex]::Match($cl, '(?ms)^##.*?(?=^##|\z)'); if($m.Success -and $script:TxtWhatsNew){ $script:TxtWhatsNew.Text=$m.Value.Substring(0,[Math]::Min(1500,$m.Value.Length)) } } catch {}
+# btnCopyLog/btnClearLog/txtLogFilter/btnOpenReleases/txtWhatsNew removed from XAML — functionality retired, no FindName needed
 $window.FindName('btnRefresh').Add_Click({ Refresh-ControlStatus })
 $window.FindName('btnHelp').Add_Click({ try { Show-ControlHelp } catch { Show-ControlError $_.Exception.Message } })
 $window.FindName('btnStartService').Add_Click({

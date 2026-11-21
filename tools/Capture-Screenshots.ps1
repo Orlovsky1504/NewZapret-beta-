@@ -1,4 +1,4 @@
-# Capture-Screenshots.ps1 — render Zapret-Control.ps1 XAML to PNG on real Windows (STA)
+﻿# Capture-Screenshots.ps1 — render Zapret-Control.ps1 XAML to PNG on real Windows (STA)
 # Запускать только на windows-latest в powershell (5.1): powershell -STA -File tools/Capture-Screenshots.ps1
 param(
     [string]$OutDir = "assets/screenshots"

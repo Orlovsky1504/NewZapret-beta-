@@ -1,4 +1,4 @@
-# Capture-VirusTotal.ps1 - открывает VirusTotal в STA браузере на windows-latest и делает PNG пруфы
+﻿# Capture-VirusTotal.ps1 - открывает VirusTotal в STA браузере на windows-latest и делает PNG пруфы
 # Использование: powershell -STA -File tools/Capture-VirusTotal.ps1 -OutDir assets/screenshots
 param([string]$OutDir = "assets/screenshots")
 $ErrorActionPreference = 'Stop'

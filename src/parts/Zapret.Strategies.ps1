@@ -572,6 +572,11 @@ function Install-ZapretService {
     Start-Sleep -Milliseconds 500
     & (Get-WindowsSystemToolPath -Name 'sc.exe') delete zapret 2>&1 | Out-Null
     [void](Stop-Zapret)
+    if (-not (Wait-ZapretServiceState -Name 'zapret' -DesiredState 'Absent' -TimeoutSec 10)) {
+        $svc = Get-ZapretServiceRecord -Name 'zapret' -ErrorAction SilentlyContinue
+        $state = if ($svc) { $svc.State } else { 'UNKNOWN' }
+        throw "Не удалось удалить старую службу zapret (состояние: $state). Служба помечена к удалению — закройте services.msc/диспетчер задач и перезагрузите Windows, затем повторите."
+    }
 
     # Enable TCP timestamps (required by some strategies)
     Enable-TcpTimestamps | Out-Null
@@ -612,7 +617,21 @@ function Install-ZapretService {
     }
 
     & (Get-WindowsSystemToolPath -Name 'sc.exe') description zapret 'Zapret DPI bypass for Discord and YouTube' 2>&1 | Out-Null
-    & (Get-WindowsSystemToolPath -Name 'sc.exe') start zapret 2>&1 | Out-Null
+    $startOutput = (& (Get-WindowsSystemToolPath -Name 'sc.exe') start zapret 2>&1 | Out-String).Trim()
+    $startExitCode = $LASTEXITCODE
+    Start-Sleep -Milliseconds 800
+    $svcInfo = $null; try { $svcInfo = Get-ZapretServiceInfo } catch { }
+    if ($startExitCode -ne 0 -or ($svcInfo -and [string]$svcInfo.State -ne 'Running')) {
+        $hint = ''
+        try { $hint = Get-Win32ErrorHint -Code $startExitCode } catch { }
+        $details = if ($startOutput) { $startOutput } else { "sc.exe exit $startExitCode" }
+        if ($hint) { $details = "$details ($hint)" }
+        # also check if winws.exe actually started
+        $winwsRunning = $false; try { $winwsRunning = [bool](Get-WinwsProcess | Select-Object -First 1) } catch { }
+        if (-not $winwsRunning) {
+            throw "Не удалось запустить службу zapret: $details. Проверьте логи и выполните диагностику (проверка установки). Если служба помечена к удалению — перезагрузите Windows."
+        }
+    }
 
     try {
         New-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Services\zapret' -Name 'zapret-discord-youtube' `

@@ -1,4 +1,9 @@
-﻿## 3.0.7 — 2026-11-21 — Фикс ApplyBest
+﻿## 3.0.8 — 2026-11-21 — Фикс службы + XAML
+
+- **Служба не глотает ошибки**: `Install-ZapretService` теперь ждёт `Absent` после `sc delete` (10с) и проверяет `sc start` — при `1072 DELETE_PENDING`/`5 Access Denied` бросает понятную ошибку с советом закрыть `services.msc` и перезагрузиться (было `Out-Null` → `STOPPED` выглядел как успех)
+- **Панель без падений**: `toggleButton`/`dropDownBorder` → `PART_` (шаблон), удалены мёртвые `FindName('txtLogFilter'/'txtWhatsNew'/'btnCopyLog'/'btnClearLog'/'btnOpenReleases')` — `bug-hunt4 8 → 0`, гейты `860/860`
+
+## 3.0.7 — 2026-11-21 — Фикс ApplyBest
 
 - **Багхант**: `btnStrategyCompareApplyBest` вызывал несуществующий `Set-UserStrategy` → `Unknown command` (wiring 1/4145). Заменён на `Install-ZapretService -StrategyId` — кнопка «Применить лучшую» теперь работает
 

@@ -1,4 +1,4 @@
-#requires -Version 5.1
+﻿#requires -Version 5.1
 <#
   Обновляет VirusTotal секцию в README.md и assets/screenshots/virustotal-links.html
   по текущим бинарям + ZIP. Вызывается:

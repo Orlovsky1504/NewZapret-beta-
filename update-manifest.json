@@ -1,9 +1,9 @@
 {
-  "version": "3.0.7",
+  "version": "3.0.8",
   "published": "2026-11-21",
-  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.7/zapret-discord-youtube-3.0.7.zip",
-  "sha256": "87e5f8ba5caf6f7df7d655d7ec6f882ced970ecca04c128e97c795da63c69ed8",
+  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.8/zapret-discord-youtube-3.0.8.zip",
+  "sha256": "18205c24ef3fe5d414565a76c100181f0d1cf5ec10ef86624e1f80acf1b9188a",
   "notes": [
-    "Фикс ApplyBest (Set-UserStrategy → Install)"
+    "Фикс службы (не глотает ошибки) + XAML чистка"
   ]
 }
