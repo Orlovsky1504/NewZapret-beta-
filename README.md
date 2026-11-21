@@ -53,7 +53,13 @@
 |---|---|
 | ![Обзор](https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/assets/screenshots/01-overview.png) | ![Дополнительно](https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/assets/screenshots/03-dop.png) |
 
-> Скриншоты — реальные, из приложения OpenZapret Control Panel. Никаких моков — только то, что видит пользователь после запуска `Zapret-Control.exe`.
+> Скриншоты — реальные, из приложения OpenZapret C
+
+**Пруф с настоящего Windows (windows-latest, RenderTargetBitmap):**
+
+![CI Render](https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/assets/screenshots/ci-overview.png)
+
+*Автоматически срендерено на `windows-latest` через `System.Windows.Media.Imaging.RenderTargetBitmap` в STA — тот же XAML, что видит пользователь. Артефакт: [ci-screenshots] в Actions.*ontrol Panel. Никаких моков — только то, что видит пользователь после запуска `Zapret-Control.exe`.
 
 > Все элементы — `btnAutoSetup`, `btnInstallStrategy`, `btnCheckUpdates` и т.д. — проверены тестами: 858 проверок, каждая кнопка имеет проводку `FindName(...).Add_Click`.
 

@@ -30,13 +30,4 @@ jobs:
           path: assets/screenshots/ci-*.png
           retention-days: 7
 
-      - name: Commit back if on main
-        shell: powershell
-        run: |
-          git config user.name "NewZapret CI"
-          git config user.email "newzapret-ci@users.noreply.github.com"
-          $has = (git status --porcelain assets/screenshots/ci-*.png 2>$null)
-          if (-not $has) { Write-Host "no new png to commit"; exit 0 }
-          git add assets/screenshots/ci-*.png
-          git commit -m "docs: CI proof screenshots (RenderTargetBitmap on windows-latest)"
-          git push origin HEAD:main
+      # Commit is done manually via token — artifact is enough for proof (push from actions forbidden without PAT)
