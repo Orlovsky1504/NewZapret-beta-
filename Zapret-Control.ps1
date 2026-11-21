@@ -2630,6 +2630,8 @@ function Start-UpdateOfferProbe {
         if ($ShowDialog) { Add-ControlActivity -Message 'Проверка обновлений уже выполняется — дождитесь результата.' }
         return
     }
+    $runspace = $null
+    $ps = $null
     try {
         $runspace = [runspacefactory]::CreateRunspace()
         $runspace.Open()
@@ -2644,7 +2646,13 @@ function Start-UpdateOfferProbe {
         $script:UpdateProbeRunspace = $runspace
         $script:UpdateProbeAsync = $ps.BeginInvoke()
         $script:UpdateProbeTimer.Start()
-    } catch { }
+    } catch {
+        $msg = $_.Exception.Message
+        Add-ControlActivity -Message ("Не удалось запустить проверку обновлений: {0}" -f $msg)
+        if ($ShowDialog) { Show-ControlError ("Не удалось запустить проверку обновлений: {0}" -f $msg) }
+        if ($ps) { try { $ps.Dispose() } catch { } }
+        if ($runspace) { try { $runspace.Dispose() } catch { } }
+    }
 }
 
 function Complete-UpdateOfferProbe {
