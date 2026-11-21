@@ -19,6 +19,7 @@
 [![Open Source](https://img.shields.io/badge/open--source-да-51D6A5?style=for-the-badge)](#-открытый-код)
 [![Платформа](https://img.shields.io/badge/platform-Windows%2010%2F11-91A0B8?style=for-the-badge)](#-установка)
 [![Тесты](https://img.shields.io/badge/тестов-858-F5B95F?style=for-the-badge)](#-для-разработчиков)
+[![VirusTotal](https://img.shields.io/badge/VirusTotal-проверено-2EA043?style=for-the-badge)](#️-безопасность--virustotal)
 [![AI](https://img.shields.io/badge/разработка-AI--assisted-9B59B6?style=for-the-badge)](#-открытый-код)
 
 [⬇️ Скачать](https://github.com/Orlovsky1504/OpenZapret/releases/download/v2.9.13/zapret-discord-youtube-2.9.13.zip) · [📦 Все релизы](https://github.com/Orlovsky1504/OpenZapret/releases) · [🚀 Установка](#-установка) · [🔄 Автообновления](#-автообновления) · [💙 Открытый код](#-открытый-код)
@@ -45,7 +46,22 @@
 
 > Версия 2.1.27+: Telegram не проверяется и не поддерживается.
 
-> **VirusTotal:** хэши и ссылки — `assets/screenshots/virustotal-links.html` (артефакт `virustotal-proof` в Actions, сгенерено на `windows-latest`).
+> [!IMPORTANT]
+> #### 🛡️ Безопасность — проверено на VirusTotal (сгенерировано на `windows-latest`)
+> Все бинари собираются на чистой Windows в Actions из открытых исходников. Открой любой файл на VirusTotal и сверь SHA256 — совпадение = файл не подменён.
+>
+> | Файл | SHA256 | VirusTotal |
+> |---|---|---|
+> | `bin/winws.exe` | `affb4f69d2ea302a7abccd5325d81826e140ddae014f1e070bc4a6c0dd555188` | [открыть](https://www.virustotal.com/gui/file/affb4f69d2ea302a7abccd5325d81826e140ddae014f1e070bc4a6c0dd555188) |
+> | `bin/WinDivert.dll` | `c1e060ee19444a259b2162f8af0f3fe8c4428a1c6f694dce20de194ac8d7d9a2` | [открыть](https://www.virustotal.com/gui/file/c1e060ee19444a259b2162f8af0f3fe8c4428a1c6f694dce20de194ac8d7d9a2) |
+> | `bin/WinDivert64.sys` | `8da085332782708d8767bcace5327a6ec7283c17cfb85e40b03cd2323a90ddc2` | [открыть](https://www.virustotal.com/gui/file/8da085332782708d8767bcace5327a6ec7283c17cfb85e40b03cd2323a90ddc2) |
+> | `Zapret-Control.exe` | `c01b16d7c461705ccdf5ccec6b9089e926ae5c8a86a51368ab955bec61fa6c74` | [открыть](https://www.virustotal.com/gui/file/c01b16d7c461705ccdf5ccec6b9089e926ae5c8a86a51368ab955bec61fa6c74) |
+> | `Zapret-Tray.exe` | `b8236432a360d046dfa41ac7782089d623c2bed21057a87d7c5f69e8548c7081` | [открыть](https://www.virustotal.com/gui/file/b8236432a360d046dfa41ac7782089d623c2bed21057a87d7c5f69e8548c7081) |
+> | **ZIP 2.9.13** | `04a1607491426622b770d38562b5cd26c20eb1e21b96cda56241f351f249fc33` | [открыть](https://www.virustotal.com/gui/file/04a1607491426622b770d38562b5cd26c20eb1e21b96cda56241f351f249fc33) — [скачать ZIP](https://github.com/Orlovsky1504/OpenZapret/releases/download/v2.9.13/zapret-discord-youtube-2.9.13.zip) |
+>
+> Проверка: `certutil -hashfile bin\winws.exe SHA256` и сравни с таблицей · Полный отчёт: [`assets/screenshots/virustotal-links.html`](https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/assets/screenshots/virustotal-links.html) (артефакт `virustotal-proof` на `windows-latest`).
+>
+> <sub>Ложные 1–2/70 детекты для `winws.exe`/`WinDivert` — норма для DPI-инструментов (эвристика). Исходники `src/`+`bin/` открыты и собираются на чистой GH Windows.</sub>
 
 ## 📸 Скриншоты
 
@@ -83,9 +99,18 @@
 
 Каждый релиз проверяется на VirusTotal по SHA-256. Совпадение хеша = файл не подменён.
 
-**Актуальный релиз 2.9.10** (проверь скачанный архив перед распаковкой):
-- ZIP: `zapret-discord-youtube-2.9.10.zip` — `ca4252c3f068804c6f13fa85668e62b7c61e180270675242ee67832003f46e20` · [открыть в VirusTotal](https://www.virustotal.com/gui/file/ca4252c3f068804c6f13fa85668e62b7c61e180270675242ee67832003f46e20)
-- EXE: `Zapret-Control.exe` — `3095b92fa52ab2782dad2f7a4cfbc0b93645bae3c7d8e7c5459381bcea48f32f` · [открыть в VirusTotal](https://www.virustotal.com/gui/file/3095b92fa52ab2782dad2f7a4cfbc0b93645bae3c7d8e7c5459381bcea48f32f)
+**Актуальный релиз 2.9.13 — проверь перед распаковкой** (`windows-latest` пруф):
+
+| Что | SHA256 | VirusTotal |
+|---|---|---|
+| ZIP `zapret-discord-youtube-2.9.13.zip` | `04a1607491426622b770d38562b5cd26c20eb1e21b96cda56241f351f249fc33` | [открыть](https://www.virustotal.com/gui/file/04a1607491426622b770d38562b5cd26c20eb1e21b96cda56241f351f249fc33) |
+| `Zapret-Control.exe` | `c01b16d7c461705ccdf5ccec6b9089e926ae5c8a86a51368ab955bec61fa6c74` | [открыть](https://www.virustotal.com/gui/file/c01b16d7c461705ccdf5ccec6b9089e926ae5c8a86a51368ab955bec61fa6c74) |
+| `Zapret-Tray.exe` | `b8236432a360d046dfa41ac7782089d623c2bed21057a87d7c5f69e8548c7081` | [открыть](https://www.virustotal.com/gui/file/b8236432a360d046dfa41ac7782089d623c2bed21057a87d7c5f69e8548c7081) |
+| `bin/winws.exe` | `affb4f69d2ea302a7abccd5325d81826e140ddae014f1e070bc4a6c0dd555188` | [открыть](https://www.virustotal.com/gui/file/affb4f69d2ea302a7abccd5325d81826e140ddae014f1e070bc4a6c0dd555188) |
+| `bin/WinDivert64.sys` | `8da085332782708d8767bcace5327a6ec7283c17cfb85e40b03cd2323a90ddc2` | [открыть](https://www.virustotal.com/gui/file/8da085332782708d8767bcace5327a6ec7283c17cfb85e40b03cd2323a90ddc2) |
+| `bin/WinDivert.dll` | `c1e060ee19444a259b2162f8af0f3fe8c4428a1c6f694dce20de194ac8d7d9a2` | [открыть](https://www.virustotal.com/gui/file/c1e060ee19444a259b2162f8af0f3fe8c4428a1c6f694dce20de194ac8d7d9a2) |
+
+> Пруф: хэши посчитаны на чистой `windows-latest` (артефакт `virustotal-proof` + [`virustotal-links.html`](https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/assets/screenshots/virustotal-links.html)).
 
 Как проверить вручную: `certutil -hashfile Zapret-Control.exe SHA256` и сравни с хешем выше, или загрузи ZIP на [virustotal.com](https://www.virustotal.com/gui/home/upload).
 
