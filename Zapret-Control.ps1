@@ -427,7 +427,7 @@ $xamlText = @'
                 <StackPanel>
                   <TextBlock Text="Сравнение стратегий" FontSize="16" FontWeight="SemiBold" Foreground="#F4F7FC" />
                   <TextBlock Text="Запусти проверку — таблица покажет какая стратегия быстрее (YouTube/Discord)." Foreground="#91A0B8" FontSize="11" TextWrapping="Wrap" Margin="0,6,0,10" />
-                  <TextBox x:Name="txtStrategyCompare" IsReadOnly="True" TextWrapping="Wrap" Height="110" Background="#0D1627" Foreground="#C7D7ED" BorderBrush="#2A3953" FontFamily="Consolas" FontSize="11" Padding="10" Text="Нажми «Сравнить» — результаты появятся здесь." />
+                  <TextBox x:Name="txtStrategyCompare" IsReadOnly="True" TextWrapping="Wrap" Height="170" Background="#0D1627" Foreground="#C7D7ED" BorderBrush="#2A3953" FontFamily="Consolas" FontSize="11" Padding="10" Text="Нажми «Сравнить» — таблица скорости YouTube/Discord появится здесь (лучшая подсветится зелёным)." />
                   <WrapPanel Margin="0,10,0,0">
                     <Button x:Name="btnStrategyCompare" Content="Сравнить стратегии" Style="{StaticResource PrimaryButton}" />
                     <Button x:Name="btnStrategyCompareApplyBest" Content="Применить лучшую" Style="{StaticResource SecondaryButton}" IsEnabled="False" />

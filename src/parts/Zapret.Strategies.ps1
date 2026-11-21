@@ -647,6 +647,13 @@ function Install-ZapretService {
     }
 
     Write-Ok "Service 'zapret' installed (strategy: $($strategy.id)) and started."
+    # полезная фича: автозапуск трея после установки стратегии
+    try {
+        $trayState = Get-TrayAutostartState
+        if (-not $trayState.Enabled) { [void](Set-TrayAutostart -Mode enable) }
+        $trayExe = Join-Path $script:Root 'Zapret-Tray.exe'
+        if (Test-Path -LiteralPath $trayExe) { try { Start-Process -FilePath $trayExe -WorkingDirectory $script:Root | Out-Null } catch { } }
+    } catch { }
     return $strategy
 }
 

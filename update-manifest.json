@@ -1,9 +1,9 @@
 {
-  "version": "3.0.13",
+  "version": "3.0.14",
   "published": "2026-11-21",
-  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.13/zapret-discord-youtube-3.0.13.zip",
-  "sha256": "2d353025942ddff5cedd83d298813098f1f30b94d9a3658e4323169e7ab7cbb4",
+  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.14/zapret-discord-youtube-3.0.14.zip",
+  "sha256": "5deb92adaa00c78cac4f2e8273b14957d188f5343c75c878ac0f37d00c6dd776",
   "notes": [
-    "Диагностика 1-клик (хаос)"
+    "Трей авто + сравнение GUI (хаос)"
   ]
 }
