@@ -104,15 +104,24 @@ jobs:
         shell: bash
         run: |
           TAG="$TAG"
-          NOTES=$(sed -n "/^## $TAG/,/^## /p" CHANGELOG.md | sed '1d;$d')
-          if [ -z "$NOTES" ]; then NOTES="Релиз $TAG — см. CHANGELOG.md"; fi
+          # Снимаем BOM если есть и нормализуем CRLF -> LF для sed
+          sed -i '1s/^\xEF\xBB\xBF//' CHANGELOG.md
+          # Пробуем заголовок вида "## 3.0.17 — ..." (с длинным тире)
+          NOTES=$(sed -n "/^## $TAG —/,/^## /p" CHANGELOG.md | sed '1d;$d')
+          # Фолбэк: старый формат "## 3.0.17" без тире
+          if [ -z "$(echo "$NOTES" | tr -d ' \t\r\n')" ]; then
+            NOTES=$(sed -n "/^## $TAG/,/^## /p" CHANGELOG.md | sed '1d;$d')
+          fi
+          if [ -z "$(echo "$NOTES" | tr -d ' \t\r\n')" ]; then
+            NOTES="Исправления и улучшения. Полный список изменений — в файле CHANGELOG.md внутри архива."
+          fi
           {
-            echo "### Что изменилось в $TAG"
+            echo "### Что нового в $TAG"
             echo ""
             echo "$NOTES"
             echo ""
             echo "---"
-            echo "SHA256 — в SHA256SUMS.txt"
+            echo "Проверка: \`certutil -hashfile zapret-discord-youtube-$TAG.zip SHA256\` — сверьте с SHA256SUMS.txt"
           } > release_notes.md
           cat release_notes.md
       - name: Create GitHub Release

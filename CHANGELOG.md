@@ -1,4 +1,4 @@
-﻿## 3.0.17 — 2026-11-21 — Детерминированный ZIP + EOL фикс (20 версий)
+## 3.0.17 — 2026-11-21 — Детерминированный ZIP + EOL фикс (20 версий)
 
 - **Корень бага**: `python write_text` писал `LF` вместо `CRLF` для `*.ps1/*.txt` из-за `.gitattributes eol=crlf`; `Build-Release.ps1` копировал с диска с разными `eol` — локальный `3e7555` vs CI `a6fb29` (7 файлов отличались)
 - **Фикс**: `Build-Release.ps1` теперь нормализует `EOL` по `.gitattributes` (`*.ps1/*.psm1/*.bat/*.txt/*.md → CRLF`, `*.json → LF`) + `Build-Release` ставит `2022-01-01` таймстампы детерминированно, `VirusTotal` теперь `099d5b4` в составе — `README.md` тоже `CRLF`
