@@ -1,4 +1,4 @@
-﻿<div align="center">
+<div align="center">
 
 
 
@@ -439,9 +439,9 @@
 > | `bin/winws.exe` | `affb4f69d2ea302a7abccd5325d81826e140ddae014f1e070bc4a6c0dd555188` | [открыть](https://www.virustotal.com/gui/file/affb4f69d2ea302a7abccd5325d81826e140ddae014f1e070bc4a6c0dd555188) |
 > | `bin/WinDivert.dll` | `c1e060ee19444a259b2162f8af0f3fe8c4428a1c6f694dce20de194ac8d7d9a2` | [открыть](https://www.virustotal.com/gui/file/c1e060ee19444a259b2162f8af0f3fe8c4428a1c6f694dce20de194ac8d7d9a2) |
 > | `bin/WinDivert64.sys` | `8da085332782708d8767bcace5327a6ec7283c17cfb85e40b03cd2323a90ddc2` | [открыть](https://www.virustotal.com/gui/file/8da085332782708d8767bcace5327a6ec7283c17cfb85e40b03cd2323a90ddc2) |
-> | `Zapret-Control.exe` | `7ab3c81a908d300e1bdd10ddc622c9e1d725e0b91fa3358036ea5f5c67eeefc2` | [открыть](https://www.virustotal.com/gui/file/7ab3c81a908d300e1bdd10ddc622c9e1d725e0b91fa3358036ea5f5c67eeefc2) |
+> | `Zapret-Control.exe` | `1cb3b5984fe5d2dd4579e2eba68c3b75e55c933218edbabbaa9a92192c344cda` | [открыть](https://www.virustotal.com/gui/file/1cb3b5984fe5d2dd4579e2eba68c3b75e55c933218edbabbaa9a92192c344cda) |
 > | `Zapret-Tray.exe` | `b8236432a360d046dfa41ac7782089d623c2bed21057a87d7c5f69e8548c7081` | [открыть](https://www.virustotal.com/gui/file/b8236432a360d046dfa41ac7782089d623c2bed21057a87d7c5f69e8548c7081) |
-> | **ZIP 3.0.5** | `f78577fe3305155757ce246812d977e4f5ecaead85ba723866457c56cac9c154` | [открыть](https://www.virustotal.com/gui/file/f78577fe3305155757ce246812d977e4f5ecaead85ba723866457c56cac9c154) — [скачать ZIP](https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.6/zapret-discord-youtube-3.0.6.zip) |
+> | **ZIP 3.0.6** | `5f90403525c795e359a04d322f7b3dd71371f025ddf3f4935df6d35f6a2f7738` | [открыть](https://www.virustotal.com/gui/file/5f90403525c795e359a04d322f7b3dd71371f025ddf3f4935df6d35f6a2f7738) — [скачать ZIP](https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.6/zapret-discord-youtube-3.0.6.zip) |
 >
 > Проверка: `certutil -hashfile bin\\winws.exe SHA256` и сравни с таблицей · Полный отчёт: [`assets/screenshots/virustotal-links.html`](https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/assets/screenshots/virustotal-links.html) (артефакт `virustotal-proof` на `windows-latest`).
 >
