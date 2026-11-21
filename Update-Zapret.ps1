@@ -427,6 +427,29 @@ function Stop-ZapretRuntimeForUpdate {
         Stop-Service -Name $service.Name -Force -ErrorAction Stop
         if (-not (Wait-ZapretServiceState -Name $service.Name -State 'Stopped' -TimeoutSec 15)) { throw "Драйвер-служба '$($service.Name)' не остановилась; файлы не заменены." }
     }
+    # Закрываю панель и трей этой установки, чтобы их exe не блокировали замену файлов
+    foreach ($leaf in @('Zapret-Control.exe','Zapret-Tray.exe')) {
+        $exePath = Join-Path $TargetRoot $leaf
+        if (-not (Test-Path -LiteralPath $exePath -PathType Leaf)) { continue }
+        try {
+            $comparable = $exePath
+            try { $comparable = [IO.Path]::GetFullPath($exePath).TrimEnd('\\','/') } catch { }
+            foreach ($proc in @(Get-Process -ErrorAction SilentlyContinue)) {
+                $pPath = $null
+                try { $pPath = $proc.Path } catch { continue }
+                if (-not $pPath) { continue }
+                $pComp = $pPath
+                try { $pComp = [IO.Path]::GetFullPath($pPath).TrimEnd('\\','/') } catch { }
+                if ([string]::Equals($pComp, $comparable, [StringComparison]::OrdinalIgnoreCase)) {
+                    Write-Host ("Закрываю $leaf (PID $($proc.Id)) для обновления...") -ForegroundColor Yellow
+                    try { $proc.CloseMainWindow() | Out-Null } catch { }
+                    Start-Sleep -Milliseconds 400
+                    if (-not $proc.HasExited) { Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue }
+                }
+            }
+        } catch { }
+    }
+    Start-Sleep -Milliseconds 500
 }
 
 function Restore-ZapretRuntimeAfterUpdate {

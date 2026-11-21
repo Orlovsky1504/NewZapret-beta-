@@ -1440,27 +1440,39 @@ function Update-ControlPageState {
         }
     } catch { }
     $rbText = 'копий пока нет'
-    try {
-        $cfg = Get-Config
-        $modeIndex = switch ([string]$cfg.gameFilter.mode) {
-            'disabled' { 0 }
-            'all' { 1 }
-            'tcp' { 2 }
-            'udp' { 3 }
-            default { 0 }
-        }
-        if ($script:CmbGameFilter.SelectedIndex -ne $modeIndex) { $script:CmbGameFilter.SelectedIndex = $modeIndex }
-        $script:TxtGameFilterState.Text = ('Сейчас: {0}   ·   порты TCP: {1}   ·   порты UDP: {2}' -f @('выключен','TCP и UDP','только TCP','только UDP')[$modeIndex], $cfg.gameFilter.tcp, $cfg.gameFilter.udp)
-        $updatesText = if ($cfg.checkUpdates) { 'включена' } else { 'выключена' }
-        $script:BtnToggleUpdates.Content = ('Автопроверка: {0}' -f $updatesText)
-        $autoInstallText = if ($cfg.autoInstallUpdates) { 'включена' } else { 'выключена' }
-        $script:BtnToggleAutoInstall.Content = ('Автоустановка: {0}' -f $autoInstallText)
-        $schedOn = $false
-        try { $schedOn = [bool](Test-AutoSelectSchedule) } catch { }
-        $script:BtnScheduleToggle.Content = if ($schedOn) { 'Перепроверка: вкл — выключить' } else { 'Перепроверка: выкл — включить' }
-        $rb = $cfg.rollback
-        $rbText = if ($rb -and $rb.folder) { ('копия от {0} ({1})' -f $rb.time, $rb.reason) } else { 'копий пока нет' }
-    } catch { }
+    $cfg = $null
+    try { $cfg = Get-Config } catch { }
+    if ($cfg) {
+        try {
+            $modeIndex = switch ([string]$cfg.gameFilter.mode) {
+                'disabled' { 0 }
+                'all' { 1 }
+                'tcp' { 2 }
+                'udp' { 3 }
+                default { 0 }
+            }
+            if ($script:CmbGameFilter -and $null -ne $script:CmbGameFilter.SelectedIndex -and $script:CmbGameFilter.SelectedIndex -ne $modeIndex) { $script:CmbGameFilter.SelectedIndex = $modeIndex }
+            if ($script:TxtGameFilterState) { $script:TxtGameFilterState.Text = ('Сейчас: {0}   ·   порты TCP: {1}   ·   порты UDP: {2}' -f @('выключен','TCP и UDP','только TCP','только UDP')[$modeIndex], $cfg.gameFilter.tcp, $cfg.gameFilter.udp) }
+        } catch { }
+        try {
+            $updatesText = if ($cfg.checkUpdates) { 'включена' } else { 'выключена' }
+            if ($script:BtnToggleUpdates) { $script:BtnToggleUpdates.Content = ('Автопроверка: {0}' -f $updatesText) }
+            $autoInstallText = if ($cfg.autoInstallUpdates) { 'включена' } else { 'выключена' }
+            if ($script:BtnToggleAutoInstall) { $script:BtnToggleAutoInstall.Content = ('Автоустановка: {0}' -f $autoInstallText) }
+        } catch { }
+        try {
+            $schedOn = $false
+            try { $schedOn = [bool](Test-AutoSelectSchedule) } catch { }
+            if ($script:BtnScheduleToggle) { $script:BtnScheduleToggle.Content = if ($schedOn) { 'Перепроверка: вкл — выключить' } else { 'Перепроверка: выкл — включить' } }
+            $rb = $cfg.rollback
+            $rbText = if ($rb -and $rb.folder) { ('копия от {0} ({1})' -f $rb.time, $rb.reason) } else { 'копий пока нет' }
+        } catch { }
+    } else {
+        try {
+            if ($script:BtnToggleUpdates) { $script:BtnToggleUpdates.Content = 'Автопроверка: включена' }
+            if ($script:BtnToggleAutoInstall) { $script:BtnToggleAutoInstall.Content = 'Автоустановка: выключена' }
+        } catch { }
+    }
     $fakesText = 'фейки не определены'
     try {
         $inv = Get-FakeInventory
