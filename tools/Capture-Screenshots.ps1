@@ -48,7 +48,8 @@ function Save-PngFromXaml {
     Start-Sleep -Milliseconds 300
 
     $dpi = 96
-    $bmp = New-Object System.Windows.Media.Imaging.RenderTargetBitmap $Width, $Height, $dpi, $dpi, [System.Windows.Media.PixelFormats]::Pbgra32
+    $pf = [System.Windows.Media.PixelFormats]::Pbgra32
+    $bmp = New-Object System.Windows.Media.Imaging.RenderTargetBitmap $Width, $Height, $dpi, $dpi, $pf
     $bmp.Render($window)
     $enc = New-Object System.Windows.Media.Imaging.PngBitmapEncoder
     $enc.Frames.Add([System.Windows.Media.Imaging.BitmapFrame]::Create($bmp))
