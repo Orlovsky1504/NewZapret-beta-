@@ -2678,7 +2678,7 @@ function Install-ControlUpdate {
     }
     Start-ControlAction -Title ('Установка обновления {0}' -f $Offer.Remote) -Action {
         param($Manifest)
-        $install = Install-ZapretUpdate -Manifest $Manifest -Relaunch -AssumeYes
+        $install = Install-ZapretUpdate -Manifest $Manifest -Relaunch
         if ($install.Ok) {
             Write-Host '  [i]  Приложение перезапущено — это окно можно закрыть.' -ForegroundColor Cyan
         } else {
