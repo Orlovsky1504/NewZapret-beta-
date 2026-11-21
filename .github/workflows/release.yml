@@ -65,6 +65,21 @@ jobs:
           sha256sum --check SHA256SUMS.txt
           cat SHA256SUMS.txt
 
+      - name: Update VirusTotal docs (auto)
+        shell: pwsh
+        run: |
+          $zipHash = (Get-FileHash -LiteralPath "zapret-discord-youtube-$env:TAG.zip" -Algorithm SHA256).Hash.ToLower()
+          Write-Host "ZIP $env:TAG hash $zipHash"
+          ./tools/Update-VirusTotalDocs.ps1 -Version "$env:TAG"
+          if (git status --porcelain README.md assets/screenshots/virustotal-links.html) {
+            git config user.name "NewZapret Release Bot"
+            git config user.email "release-bot@users.noreply.github.com"
+            git add README.md assets/screenshots/virustotal-links.html
+            git commit -m "docs: VirusTotal $env:TAG — auto-update hashes"
+            git push origin HEAD:main
+            Write-Host "VirusTotal docs pushed"
+          } else { Write-Host "VirusTotal docs already current" }
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
