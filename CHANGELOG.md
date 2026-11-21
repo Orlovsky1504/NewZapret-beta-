@@ -1,4 +1,8 @@
-﻿## 3.0.4 — 2026-11-21 — Простой лаунчер
+﻿## 3.0.5 — 2026-11-21 — Фикс InvokeMethodOnNull
+
+- **Исправлена панель**: `txtLogFilter`/`txtWhatsNew`/`btnCopyLog`/`btnClearLog`/`btnOpenReleases` отсутствовали в XAML → `FindName` возвращал `NULL` → `InvokeMethodOnNull` на `Add_TextChanged`/`Add_Click`. Теперь гварды `if ($el=FindName) { $el.Add_... }`
+
+## 3.0.4 — 2026-11-21 — Простой лаунчер
 
 - **Переписан лаунчер**: убран сплэш/mutex/SCM/ожидание панели, только `ShellExecuteEx runas` → `powershell -File Zapret-Control.ps1`, `SW_SHOWNORMAL`, fallback без `runas` — код 1 больше не появляется
 

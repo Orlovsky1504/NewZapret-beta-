@@ -1,9 +1,9 @@
 {
-  "version": "3.0.4",
+  "version": "3.0.5",
   "published": "2026-11-21",
-  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.4/zapret-discord-youtube-3.0.4.zip",
+  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.5/zapret-discord-youtube-3.0.5.zip",
   "sha256": "93e3b6d1a56410856f804daf0deff3cec3600f1c53c5ad96ea75c2feafcc2d19",
   "notes": [
-    "Простой лаунчер без сплэша"
+    "Фикс InvokeMethodOnNull (NULL guard)"
   ]
 }
