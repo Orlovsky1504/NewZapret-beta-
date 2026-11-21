@@ -1,4 +1,9 @@
-﻿## 3.0.9 — 2026-11-21 — Профили 1-клик (хаос)
+﻿## 3.0.10 — 2026-11-21 — Живой статус + Anti-stuck
+
+- **Живой статус**: `Refresh-ControlStatus` каждые 5с (было 30с), `DeletePending/MarkedForDelete` показывает хинт «закрыйте services.msc / anti-stuck убивает winws»
+- **Anti-stuck**: `Install-ZapretService` при `Absent` таймауте убивает `winws.exe` этой установки (`Stop-Zapret`) и ретрает `sc delete` 5с
+
+## 3.0.9 — 2026-11-21 — Профили 1-клик (хаос)
 
 - **Хаотичный порядок**: добавлены кнопки «Только Discord / Только YouTube / Весь обход» на главной + `txtProfileQuickState` + `Set-QuickProfile` (быстрый `Set-BypassProfile` с рестартом службы)
 

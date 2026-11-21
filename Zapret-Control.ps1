@@ -955,7 +955,9 @@ function Refresh-ControlStatus {
                 default {
                     $script:TxtServiceState.Text = [string]$service.State
                     $script:TxtServiceState.Foreground = [System.Windows.Media.BrushConverter]::new().ConvertFromString('#F5B95F')
-                    $script:TxtServiceDetail.Text = 'Служба меняет состояние.'
+                    if ([string]$service.State -match 'StopPending|StartPending|DeletePending|MarkedForDelete') {
+                        $script:TxtServiceDetail.Text = 'Служба зависла при удалении — закройте services.msc и подождите 10с или перезагрузите. Anti-stuck попробует убить winws.exe.'
+                    } else { $script:TxtServiceDetail.Text = 'Служба меняет состояние.' }
                     $script:BtnStartService.IsEnabled = $false
                     $script:BtnStopService.IsEnabled = $false
                 }
@@ -2945,7 +2947,7 @@ $window.FindName('btnUninstall').Add_Click({
 })
 
 $script:StatusTimer = New-Object System.Windows.Threading.DispatcherTimer
-$script:StatusTimer.Interval = [TimeSpan]::FromSeconds(30)
+$script:StatusTimer.Interval = [TimeSpan]::FromSeconds(5)
 $script:StatusTimer.Add_Tick({ Refresh-ControlStatus })
 $script:WizardTimer = New-Object System.Windows.Threading.DispatcherTimer
 $script:WizardTimer.Interval = [TimeSpan]::FromMilliseconds(500)

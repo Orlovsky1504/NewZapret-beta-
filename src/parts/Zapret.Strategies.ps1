@@ -573,9 +573,15 @@ function Install-ZapretService {
     & (Get-WindowsSystemToolPath -Name 'sc.exe') delete zapret 2>&1 | Out-Null
     [void](Stop-Zapret)
     if (-not (Wait-ZapretServiceState -Name 'zapret' -DesiredState 'Absent' -TimeoutSec 10)) {
-        $svc = Get-ZapretServiceRecord -Name 'zapret' -ErrorAction SilentlyContinue
-        $state = if ($svc) { $svc.State } else { 'UNKNOWN' }
-        throw "Не удалось удалить старую службу zapret (состояние: $state). Служба помечена к удалению — закройте services.msc/диспетчер задач и перезагрузите Windows, затем повторите."
+        Write-Log 'Anti-stuck: служба не удалилась, убиваю winws.exe этой установки и пробую снова' 'WARN'
+        try { [void](Stop-Zapret -Quiet) } catch { }
+        Start-Sleep -Milliseconds 800
+        & (Get-WindowsSystemToolPath -Name 'sc.exe') delete zapret 2>&1 | Out-Null
+        if (-not (Wait-ZapretServiceState -Name 'zapret' -DesiredState 'Absent' -TimeoutSec 5)) {
+            $svc = Get-ZapretServiceRecord -Name 'zapret' -ErrorAction SilentlyContinue
+            $state = if ($svc) { $svc.State } else { 'UNKNOWN' }
+            throw "Не удалось удалить старую службу zapret (состояние: $state). Служба помечена к удалению — закройте services.msc/диспетчер задач и перезагрузите Windows, затем повторите."
+        }
     }
 
     # Enable TCP timestamps (required by some strategies)
