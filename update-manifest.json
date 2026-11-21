@@ -1,9 +1,9 @@
 {
-  "version": "3.0.12",
+  "version": "3.0.13",
   "published": "2026-11-21",
-  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.12/zapret-discord-youtube-3.0.12.zip",
-  "sha256": "14b30b4d2c181ea373afe649867d9ed1d6a7fc931ac5ddcb1fb32f2a79547250",
+  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.13/zapret-discord-youtube-3.0.13.zip",
+  "sha256": "2d353025942ddff5cedd83d298813098f1f30b94d9a3658e4323169e7ab7cbb4",
   "notes": [
-    "Фикс wiring Stop-Zapret"
+    "Диагностика 1-клик (хаос)"
   ]
 }

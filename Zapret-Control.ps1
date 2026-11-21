@@ -2688,7 +2688,10 @@ $window.FindName('btnDomainDiscover').Add_Click({
 # ----- More page -----
 $window.FindName('btnSupportBundle').Add_Click({
     if (-not (Confirm-ControlAction 'Собрать отчёт для поддержки на Рабочем столе? Пути, IP и секреты маскируются; пользовательские стратегии не включаются.')) { return }
-    Start-ControlAction -Title 'Отчёт для поддержки' -Action { [void](New-SupportBundle) }
+    Start-ControlAction -Title 'Отчёт для поддержки' -Action {
+        $zip = New-SupportBundle
+        if ($zip) { try { explorer.exe "/select,`"$zip`"" | Out-Null } catch { }; Write-Host ("Готово: {0}" -f $zip) -ForegroundColor Green }
+    }
 })
 function Install-ControlUpdate {
     # UI-thread dialog + background install. Start-ControlAction executes the
