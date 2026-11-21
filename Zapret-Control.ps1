@@ -926,7 +926,7 @@ function Update-CarrierCard {
 }
 function Set-CarrierQuick { param([string]$Carrier, [string]$Label)
     if (-not (Confirm-ControlAction ('Запустить быстрый подбор для оператора {0}? Потребуется подтверждение в мастере.' -f $Label))) { return }
-    try { Set-ControlStatus -Message ('Оператор: {0}…' -f $Label) } catch { }
+    try { Add-ControlActivity -Message ('Оператор: {0}…' -f $Label) } catch { }
     Start-WizardBenchmark -Carrier $Carrier -Fast $true
     if ($script:TxtCarrierState) { $script:TxtCarrierState.Text = 'Выбран: ' + $Label + ' — идёт подбор…' }
 }
@@ -2726,7 +2726,7 @@ $window.FindName('btnSupportBundle').Add_Click({
     if (-not (Confirm-ControlAction 'Собрать отчёт для поддержки на Рабочем столе? Пути, IP и секреты маскируются; пользовательские стратегии не включаются.')) { return }
     Start-ControlAction -Title 'Отчёт для поддержки' -Action {
         $zip = New-SupportBundle
-        if ($zip) { try { explorer.exe "/select,`"$zip`"" | Out-Null } catch { }; Write-Host ("Готово: {0}" -f $zip) -ForegroundColor Green }
+        if ($zip) { try { Start-Process -FilePath "explorer.exe" -ArgumentList "/select,`"$zip`"" | Out-Null } catch { }; Write-Host ("Готово: {0}" -f $zip) -ForegroundColor Green }
     }
 })
 function Install-ControlUpdate {
