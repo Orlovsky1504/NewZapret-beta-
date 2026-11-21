@@ -16,6 +16,7 @@ jobs:
           curl -sSL -o /tmp/pwsh.tar.gz https://github.com/PowerShell/PowerShell/releases/download/v7.4.6/powershell-7.4.6-linux-x64.tar.gz
           sudo mkdir -p /opt/microsoft/powershell/7
           sudo tar zxf /tmp/pwsh.tar.gz -C /opt/microsoft/powershell/7
+          sudo chmod +x /opt/microsoft/powershell/7/pwsh
           sudo ln -sf /opt/microsoft/powershell/7/pwsh /usr/bin/pwsh
       - name: Run Test-Build
         shell: pwsh
