@@ -1,10 +1,9 @@
 {
-  "version": "2.9.7",
+  "version": "2.9.8",
   "published": "2026-11-21",
-  "zipUrl": "https://github.com/Orlovsky1504/NewZapret-beta-/releases/download/v2.9.7/zapret-discord-youtube-2.9.7.zip",
-  "sha256": "f51b1fb103e57b95d5d3a9c377256e0f04db4490a5b43c57b2988439b42fc0b0",
+  "zipUrl": "https://github.com/Orlovsky1504/NewZapret-beta-/releases/download/v2.9.8/zapret-discord-youtube-2.9.8.zip",
+  "sha256": "e4b4613cff39ee6fb8d1b232d92e102327ed9a9ea4304216186dfed7c172b26d",
   "notes": [
-    "Улучшено: валидация портов в стратегиях отклоняет значения вне диапазона 1-65535 (раньше достаточно было пяти цифр).",
-    "Улучшено: версия на странице проекта (бейдж и ссылки скачивания) обновляется автоматически с каждым релизом."
+    "Новый значок приложения: щит с молнией вместо старой «Z» — встроен в панель управления, индикатор трея и ярлыки (Zapret-Control.ico, 7 размеров).,Значок синхронизирован с логотипом страницы проекта."
   ]
 }
