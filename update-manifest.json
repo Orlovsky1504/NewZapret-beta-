@@ -1,9 +1,10 @@
 {
-  "version": "2.9.9",
+  "version": "2.9.10",
   "published": "2026-11-21",
-  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/v2.9.9/zapret-discord-youtube-2.9.9.zip",
-  "sha256": "e293c87f6a2e5ffc182e84ce08bcfbb789a6f471e54f2f1e051a0ada58613f51",
+  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/v2.9.10/zapret-discord-youtube-2.9.10.zip",
+  "sha256": "45c683045c44f569ef6da2885672dc3d629ff5d77d257f09a7ab1e8e22ed4c79",
   "notes": [
-    "Переименовано в OpenZapret: новое имя проекта и репозитория (github.com/Orlovsky1504/OpenZapret) — щит с молнией теперь официальный символ,Панель управления переименована в OpenZapret: заголовок окна, ярлык на рабочем столе и свойства exe теперь показывают новое имя"
+    "Исправлено: кнопки автообновлений в панели теперь показывают включена/выключена и реально работают — включение автопроверки запускает проверку при старте, включение автоустановки ставит обновления автоматически",
+    "Исправлено: старый манифест теперь с двумя заметками и ярлык спрашивается как OpenZapret"
   ]
 }
