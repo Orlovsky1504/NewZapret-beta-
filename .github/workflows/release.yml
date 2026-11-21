@@ -1,4 +1,4 @@
-﻿name: Release
+name: Release
 
 on:
   workflow_dispatch:
@@ -85,7 +85,7 @@ jobs:
         run: |
           $tag = $env:TAG
           $cl = Get-Content -LiteralPath CHANGELOG.md -Raw
-          # Ищу секцию ## <tag> ... до следующего ## 
+          # Extract ## <tag> section until next ## 
           $pattern = "(?ms)^##\s*\[?" + [regex]::Escape($tag) + "\b.*?\r?\n(.*?)(?=^##\s|\z)"
           $m = [regex]::Match($cl, $pattern)
           if ($m.Success) {
