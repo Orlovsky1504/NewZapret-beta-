@@ -1,0 +1,61 @@
+name: Windows
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Test-Build (PowerShell 7)
+        shell: pwsh
+        run: ./tests/Test-Build.ps1
+
+      - name: Product smoke (Windows PowerShell 5.1)
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Write-Host "== PowerShell 5.1 runtime smoke =="
+          Write-Host "PS version: $($PSVersionTable.PSVersion)"
+          Import-Module ./src/Zapret.psm1 -Force
+          $cmds = Get-Command -Module Zapret | Measure-Object
+          Write-Host "exported commands: $($cmds.Count)"
+          if ($cmds.Count -lt 10) { throw "too few exported commands" }
+          $w = [System.Windows.Window]
+          Write-Host "WPF type loaded: $($w.Assembly.GetName().Version)"
+          foreach ($a in @('version','status','list','help')) {
+            Write-Host "== zapret.ps1 $a =="
+            & ./zapret.ps1 $a -NoInteractive
+            if ($LASTEXITCODE -ne $null -and $LASTEXITCODE -ne 0) { throw "action '$a' exited $LASTEXITCODE" }
+          }
+          Write-Host "smoke OK"
+
+      - name: Product smoke extras (dns, health-check, check-updates)
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Continue'
+          foreach ($a in @('dns','health-check','check-updates')) {
+            Write-Host "== zapret.ps1 $a =="
+            & ./zapret.ps1 $a -NoInteractive
+            Write-Host "exit: $LASTEXITCODE"
+          }
+
+      - name: WinProbe.exe on real Windows
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $out = & ./bin/WinProbe.exe 2>&1 | Out-String
+          Write-Host $out
+          if (-not $out.Trim()) { throw "WinProbe produced no output" }
+          Write-Host "WinProbe exit code: $LASTEXITCODE"
+
+      - name: Informational — Test-Build under PS 5.1
+        shell: powershell
+        continue-on-error: true
+        run: ./tests/Test-Build.ps1
