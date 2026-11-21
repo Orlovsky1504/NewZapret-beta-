@@ -1,10 +1,9 @@
 {
-  "version": "2.9.8",
+  "version": "2.9.9",
   "published": "2026-11-21",
-  "zipUrl": "https://github.com/Orlovsky1504/NewZapret-beta-/releases/download/v2.9.8/zapret-discord-youtube-2.9.8.zip",
-  "sha256": "fecbde2986ccb7a326873b18f538d115af7a30ea0c9009f7458125c4a57e23f5",
+  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/v2.9.9/zapret-discord-youtube-2.9.9.zip",
+  "sha256": "e293c87f6a2e5ffc182e84ce08bcfbb789a6f471e54f2f1e051a0ada58613f51",
   "notes": [
-    "Новый значок приложения: щит с молнией вместо старой «Z» — встроен в панель управления, индикатор трея и ярлыки (Zapret-Control.ico, 7 размеров). Значок синхронизирован с логотипом страницы проекта.",
-    "На странице проекта отмечено: при создании активно используется ИИ — нейросети помогают писать код, но каждое изменение проходит 858 тестов и CI на Windows."
+    "Переименовано в OpenZapret: новое имя проекта и репозитория (github.com/Orlovsky1504/OpenZapret) — щит с молнией теперь официальный символ,Панель управления переименована в OpenZapret: заголовок окна, ярлык на рабочем столе и свойства exe теперь показывают новое имя"
   ]
 }

@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/Orlovsky1504/NewZapret-beta-/main/assets/banner.png" width="100%" alt="NewZapret — обход блокировок Discord и YouTube" />
+<img src="https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/assets/banner.png" width="100%" alt="OpenZapret — обход блокировок Discord и YouTube" />
 
-# ⚡ NewZapret
+# ⚡ OpenZapret
 
 **Мощная модификация zapret для обхода блокировок Discord, YouTube, WhatsApp и других сервисов**
 
@@ -10,18 +10,18 @@
 
 <br/>
 
-<img src="https://raw.githubusercontent.com/Orlovsky1504/NewZapret-beta-/main/assets/logo.png" width="88" height="88" alt="NewZapret logo" />
+<img src="https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/assets/logo.png" width="88" height="88" alt="OpenZapret logo" />
 
 <br/>
 <br/>
 
-[![Версия](https://img.shields.io/badge/версия-2.9.8-4F7DF3?style=for-the-badge)](https://github.com/Orlovsky1504/NewZapret-beta-/releases/download/v2.9.8/zapret-discord-youtube-2.9.8.zip)
+[![Версия](https://img.shields.io/badge/версия-2.9.9-4F7DF3?style=for-the-badge)](https://github.com/Orlovsky1504/OpenZapret/releases/download/v2.9.9/zapret-discord-youtube-2.9.9.zip)
 [![Open Source](https://img.shields.io/badge/open--source-да-51D6A5?style=for-the-badge)](#-открытый-код)
 [![Платформа](https://img.shields.io/badge/platform-Windows%2010%2F11-91A0B8?style=for-the-badge)](#-установка)
 [![Тесты](https://img.shields.io/badge/тестов-858-F5B95F?style=for-the-badge)](#-для-разработчиков)
 [![AI](https://img.shields.io/badge/разработка-AI--assisted-9B59B6?style=for-the-badge)](#-открытый-код)
 
-[⬇️ Скачать](https://github.com/Orlovsky1504/NewZapret-beta-/releases/download/v2.9.8/zapret-discord-youtube-2.9.8.zip) · [📦 Все релизы](https://github.com/Orlovsky1504/NewZapret-beta-/releases) · [🚀 Установка](#-установка) · [🔄 Автообновления](#-автообновления) · [💙 Открытый код](#-открытый-код)
+[⬇️ Скачать](https://github.com/Orlovsky1504/OpenZapret/releases/download/v2.9.9/zapret-discord-youtube-2.9.9.zip) · [📦 Все релизы](https://github.com/Orlovsky1504/OpenZapret/releases) · [🚀 Установка](#-установка) · [🔄 Автообновления](#-автообновления) · [💙 Открытый код](#-открытый-код)
 
 </div>
 
@@ -47,7 +47,7 @@
 
 ## 🚀 Установка
 
-1. **Скачай** [последний архив](https://github.com/Orlovsky1504/NewZapret-beta-/releases/download/v2.9.8/zapret-discord-youtube-2.9.8.zip)
+1. **Скачай** [последний архив](https://github.com/Orlovsky1504/OpenZapret/releases/download/v2.9.9/zapret-discord-youtube-2.9.9.zip)
 2. **Распакуй** в любую папку (например `C:\zapret`) — *не в «Загрузки» и не на рабочий стол системы*
 3. **Запусти `Zapret-Control.exe`** и подтверди права администратора — они нужны для управления обходом
 4. Нажми **«Автонастройка»** — мастер сам подберёт стратегию и всё настроит
@@ -60,7 +60,7 @@
 
 ## 🔄 Автообновления
 
-Работают из коробки: программа проверяет файл [`update-manifest.json`](https://github.com/Orlovsky1504/NewZapret-beta-/blob/main/update-manifest.json) в этом репозитории и при появлении новой версии предлагает обновление (или ставит его сама, если включена «Автоустановка»).
+Работают из коробки: программа проверяет файл [`update-manifest.json`](https://github.com/Orlovsky1504/OpenZapret/blob/main/update-manifest.json) в этом репозитории и при появлении новой версии предлагает обновление (или ставит его сама, если включена «Автоустановка»).
 
 - Архив скачивается по ссылке из манифеста и проверяется по **SHA-256** — подделать или сломать обновление не выйдет
 - Настройки, списки и пользовательские стратегии **сохраняются**
@@ -69,7 +69,7 @@
 ## 🧩 Что внутри
 
 ```
-NewZapret/
+OpenZapret/
 ├── Zapret-Control.exe   ← графическая панель (начни с неё)
 ├── zapret.bat           ← классическое консольное меню
 ├── Update-Zapret.bat    ← безопасное обновление из архива
@@ -95,7 +95,7 @@ NewZapret/
 > **При создании проекта активно используется ИИ.** Нейросети помогают писать и проверять код, но каждое изменение проходит проверку тестами (858 проверок) и CI на Linux и настоящей Windows — слова нейросетей не являются доказательством, доказательство — зелёные тесты.
 
 
-**NewZapret — проект с открытым исходным кодом (open source), лицензия [MIT](LICENSE.txt).** Код лежит в этом репозитории — смотри, изучай, дорабатывай, делись с другими.
+**OpenZapret — проект с открытым исходным кодом (open source), лицензия [MIT](LICENSE.txt).** Код лежит в этом репозитории — смотри, изучай, дорабатывай, делись с другими.
 
 Проект стоит на плечах великолепных открытых проектов:
 
