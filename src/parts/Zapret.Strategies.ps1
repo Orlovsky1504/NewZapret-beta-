@@ -268,6 +268,7 @@ function Test-StrategyArgs {
             { $_ -in @('--wf-tcp','--wf-udp','--filter-tcp','--filter-udp') } {
                 $ports = '^(?:\d{1,5}(?:-\d{1,5})?|\{GAME_TCP\}|\{GAME_UDP\})(?:,(?:\d{1,5}(?:-\d{1,5})?|\{GAME_TCP\}|\{GAME_UDP\}))*$'
                 if ($value -notmatch $ports) { $problems.Add("$key has an invalid port range") }
+                elseif (-not (Test-PortRange ($value -replace '\{GAME_(TCP|UDP)\}', '1'))) { $problems.Add("$key has a port outside 1-65535") }
                 break
             }
             '--filter-l3' { if ($value -notin @('ipv4','ipv6')) { $problems.Add('--filter-l3 must be ipv4 or ipv6') }; break }
