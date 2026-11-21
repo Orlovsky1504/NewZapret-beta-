@@ -103,7 +103,7 @@
 
 | Что | SHA256 | VirusTotal |
 |---|---|---|
-| ZIP `zapret-discord-youtube-2.9.14.zip` | `04a1607491426622b770d38562b5cd26c20eb1e21b96cda56241f351f249fc33` | [открыть](https://www.virustotal.com/gui/file/04a1607491426622b770d38562b5cd26c20eb1e21b96cda56241f351f249fc33) |
+| ZIP `zapret-discord-youtube-2.9.14.zip` | `a2beaa9d8cb760f3eb671b1cfefb174278dbca992b763ab19cc309ed951efb24` | [открыть](https://www.virustotal.com/gui/file/a2beaa9d8cb760f3eb671b1cfefb174278dbca992b763ab19cc309ed951efb24) |
 | `Zapret-Control.exe` | `c01b16d7c461705ccdf5ccec6b9089e926ae5c8a86a51368ab955bec61fa6c74` | [открыть](https://www.virustotal.com/gui/file/c01b16d7c461705ccdf5ccec6b9089e926ae5c8a86a51368ab955bec61fa6c74) |
 | `Zapret-Tray.exe` | `b8236432a360d046dfa41ac7782089d623c2bed21057a87d7c5f69e8548c7081` | [открыть](https://www.virustotal.com/gui/file/b8236432a360d046dfa41ac7782089d623c2bed21057a87d7c5f69e8548c7081) |
 | `bin/winws.exe` | `affb4f69d2ea302a7abccd5325d81826e140ddae014f1e070bc4a6c0dd555188` | [открыть](https://www.virustotal.com/gui/file/affb4f69d2ea302a7abccd5325d81826e140ddae014f1e070bc4a6c0dd555188) |
