@@ -1987,6 +1987,7 @@ $repoManifestText = [IO.File]::ReadAllText((Join-Path $repoRoot 'update-manifest
 $repoManifestCheck = ConvertTo-ZapretUpdateManifest -Raw ($repoManifestText | ConvertFrom-Json)
 Check 'repo update-manifest.json is valid' ($repoManifestCheck.Ok -and $repoManifestCheck.Manifest.Sha256 -match '^[A-F0-9]{64}$')
 Check 'repo update-manifest version tracks version.txt' ($repoManifestCheck.Manifest.Version -eq ([IO.File]::ReadAllText((Join-Path $repoRoot '.service\version.txt'))).Trim())
+Check 'root version.txt tracks .service/version.txt' (([IO.File]::ReadAllText((Join-Path $repoRoot 'version.txt'))).Trim() -eq ([IO.File]::ReadAllText((Join-Path $repoRoot '.service\version.txt'))).Trim())
 Check 'update offer without feed is honest about configuration' (-not (Get-ZapretUpdateOffer).Configured -and (Get-ZapretUpdateOffer).Error -match 'updateFeed')
 $defaultsProbePath = Join-Path ([IO.Path]::GetTempPath()) ('zapret-defaults-' + [Guid]::NewGuid().ToString('N') + '.json')
 $defaultsProbe = Get-Config -Path $defaultsProbePath
