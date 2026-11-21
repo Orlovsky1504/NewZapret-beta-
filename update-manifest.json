@@ -2,7 +2,7 @@
   "version": "3.0.17",
   "published": "2026-11-21",
   "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/3.0.17/zapret-discord-youtube-3.0.17.zip",
-  "sha256": "19f722fb1c41fde778d1b3fe579601f6d0db3a4e47d829676ff5bf26820ec8da",
+  "sha256": "ab5ae3a69acaced8251637603f8727900f5822f05eb972e14654ff7b5fdd7e8e",
   "notes": [
     "Детерминированный ZIP + EOL фикс (20 версий)"
   ]
