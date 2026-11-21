@@ -2010,11 +2010,23 @@ $window.FindName('btnStartService').Add_Click({
         $info = Get-ZapretServiceInfo
         if (-not $info.Installed) { throw 'Служба zapret не установлена. Запустите автонастройку.' }
         if ([string]$info.State -eq 'Running') { Add-ControlActivity -Message 'Служба уже работает.'; return }
-        Start-Service -Name 'zapret' -ErrorAction Stop
-        (Get-Service -Name 'zapret').WaitForStatus([System.ServiceProcess.ServiceControllerStatus]::Running, [TimeSpan]::FromSeconds(20))
-        Add-ControlActivity -Message 'Служба запущена.'
+        try {
+            Start-Service -Name 'zapret' -ErrorAction Stop
+            (Get-Service -Name 'zapret').WaitForStatus([System.ServiceProcess.ServiceControllerStatus]::Running, [TimeSpan]::FromSeconds(20))
+            Add-ControlActivity -Message 'Служба запущена.'
+        } catch {
+            $startErr = $_.Exception.Message
+            Add-ControlActivity -Message ('Быстрый запуск не удался: {0} — пробую переустановить текущую стратегию…' -f $startErr)
+            $strategyId = [string]$info.Strategy
+            if ([string]::IsNullOrWhiteSpace($strategyId)) {
+                try { $strategyId = [string](Get-Config).lastStrategy } catch { }
+            }
+            if ([string]::IsNullOrWhiteSpace($strategyId)) { throw ('Не удалось запустить службу: {0}' -f $startErr) }
+            Install-ZapretService -StrategyId $strategyId | Out-Null
+            Add-ControlActivity -Message ('Служба переустановлена стратегией {0} и запущена.' -f $strategyId)
+        }
         Refresh-ControlStatus
-    } catch { Show-ControlError $_.Exception.Message }
+    } catch { Show-ControlError $_.Exception.Message; Refresh-ControlStatus }
 })
 $window.FindName('btnStopService').Add_Click({
     $answer = [System.Windows.MessageBox]::Show($window, 'Остановить обход? Служба и winws.exe этой установки будут выключены, драйвер WinDivert этой установки будет выгружен. Чтобы снова включить, нажмите «Запустить службу» или установите стратегию.', 'Остановить zapret', [System.Windows.MessageBoxButton]::YesNo, [System.Windows.MessageBoxImage]::Warning)
