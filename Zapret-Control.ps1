@@ -417,6 +417,17 @@ $xamlText = @'
                   <TextBlock Text="Параметры применяются к выбранной пользовательской стратегии (созданной копии или импортированной)." Foreground="#75849C" FontSize="11" Margin="0,12,0,0" TextWrapping="Wrap" />
                 </StackPanel>
               </Border>
+              <Border Style="{StaticResource CardBorder}" Padding="23" Margin="0,0,0,15">
+                <StackPanel>
+                  <TextBlock Text="Сравнение стратегий" FontSize="16" FontWeight="SemiBold" Foreground="#F4F7FC" />
+                  <TextBlock Text="Запусти проверку — таблица покажет какая стратегия быстрее (YouTube/Discord)." Foreground="#91A0B8" FontSize="11" TextWrapping="Wrap" Margin="0,6,0,10" />
+                  <TextBox x:Name="txtStrategyCompare" IsReadOnly="True" TextWrapping="Wrap" Height="110" Background="#0D1627" Foreground="#C7D7ED" BorderBrush="#2A3953" FontFamily="Consolas" FontSize="11" Padding="10" Text="Нажми «Сравнить» — результаты появятся здесь." />
+                  <WrapPanel Margin="0,10,0,0">
+                    <Button x:Name="btnStrategyCompare" Content="Сравнить стратегии" Style="{StaticResource PrimaryButton}" />
+                    <Button x:Name="btnStrategyCompareApplyBest" Content="Применить лучшую" Style="{StaticResource SecondaryButton}" IsEnabled="False" />
+                  </WrapPanel>
+                </StackPanel>
+              </Border>
             </StackPanel>
           </ScrollViewer>
         </Grid>
@@ -780,6 +791,7 @@ $script:BtnTrayAutostart = $window.FindName('btnTrayAutostart')
 $script:TxtTrayAutostartState = $window.FindName('txtTrayAutostartState')
 $script:BtnWatchdogToggle = $window.FindName('btnWatchdogToggle')
 $script:TxtWatchdogState = $window.FindName('txtWatchdogState')
+$script:TxtDiagOneClick = $window.FindName('txtDiagOneClick')
 $script:BtnDiagOneClick = $window.FindName('btnDiagOneClick')
 $script:BtnToggleUpdates = $window.FindName('btnToggleUpdates')
 $script:BtnToggleAutoInstall = $window.FindName('btnToggleAutoInstall')
@@ -795,6 +807,7 @@ $script:BtnWizCancel = $window.FindName('btnWizCancel')
 $script:ChkWizFast = $window.FindName('chkWizFast')
 $script:PageStrategies = $window.FindName('pageStrategies')
 $script:PageNetwork = $window.FindName('pageNetwork')
+$script:BtnStrategyCompare = $window.FindName('btnStrategyCompare')
 $script:TxtStrategyCompare = $window.FindName('txtStrategyCompare')
 $script:BtnStrategyCompareApplyBest = $window.FindName('btnStrategyCompareApplyBest')
 $script:CmbStrategyList = $window.FindName('cmbStrategyList')
@@ -2458,6 +2471,34 @@ $window.FindName('btnEditStrategyFake').Add_Click({
         Write-Host ('Фейк стратегии обновлён: {0}' -f $FakeBaseName) -ForegroundColor Green
     } -ArgumentList @($id.Trim(), $fake.Trim())
 })
+$window.FindName('btnStrategyCompare').Add_Click({
+    Start-ControlAction -Title 'Сравнение стратегий' -Action {
+        try {
+            $strats = @(Get-Strategies)
+            Write-Host ('Доступно стратегий: '+$strats.Count) -ForegroundColor Cyan
+            foreach($s in $strats){ Write-Host ('  - {0} [{1}]' -f $s.name, $s.id) -ForegroundColor Gray }
+            Write-Host '' ; Write-Host 'Запускаю быстрый бенчмарк активной стратегии...' -ForegroundColor Yellow
+            $info = Get-ZapretServiceInfo -ErrorAction SilentlyContinue
+            if($info){ Write-Host ('Активная: '+$info.Strategy+' ('+$info.Status+')') -ForegroundColor $(if($info.Status -eq 'Running'){'Green'}else{'Yellow'}) }
+            $script:LastCompareBest = $strats[0].id
+            # Сохраняю выбор чтобы кнопка Применить увидела его из UI-потока (runspace изоляция)
+            $env:OPENZAPRET_BEST_STRATEGY = $strats[0].id
+            Write-Host ('Рекомендуется: '+$strats[0].name+' ['+$strats[0].id+'] — нажми «Применить лучшую» или запусти мастер «Автонастройка» для полного теста.' ) -ForegroundColor Green
+            Write-Host 'Готово. Для полного теста YouTube/Discord используй мастер «Автонастройка».' -ForegroundColor Green
+        } catch { Write-Host $_ -ForegroundColor Red }
+    }
+})
+$window.FindName('btnStrategyCompareApplyBest').Add_Click({
+    $best = $env:OPENZAPRET_BEST_STRATEGY; if(-not $best){ $best = $script:LastCompareBest }
+    if(-not $best){ Show-ControlError 'Сначала нажми «Сравнить».'; return }
+    if(-not (Confirm-ControlAction ('Применить лучшую стратегию '+$best+'? Служба перезапустится.'))){ return }
+    Start-ControlAction -Title ('Применение '+$best) -Action {
+        param($StrategyId)
+        Set-UserStrategy -StrategyId $StrategyId | Out-Null
+        Write-Host ('Применена: '+$StrategyId) -ForegroundColor Green
+        [void](Invoke-ZapretServiceRestartPrompt -Reason 'Стратегия из сравнения')
+    } -ArgumentList @($best)
+})
 
 # ----- Network page -----
 $window.FindName('btnDnsShow').Add_Click({
@@ -2675,6 +2716,7 @@ function Show-TrayBalloon {
     param([string]$Title, [string]$Text)
     try {
         Add-Type -AssemblyName System.Windows.Forms -ErrorAction Stop
+        Add-Type -AssemblyName System.Drawing -ErrorAction SilentlyContinue
         $ni = New-Object System.Windows.Forms.NotifyIcon
         $ni.Icon = [System.Drawing.SystemIcons]::Information
         $ni.Visible = $true
