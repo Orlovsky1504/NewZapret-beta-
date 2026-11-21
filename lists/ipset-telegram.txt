@@ -1,0 +1,2 @@
+# Telegram is no longer targeted (removed in 2.1.27). This empty file stays for compatibility
+# with old user strategies that reference {LISTS}ipset-telegram.txt. Do not delete.

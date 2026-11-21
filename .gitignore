@@ -1,0 +1,18 @@
+# Runtime artifacts
+/logs/
+/.service/watchdog-state.json
+/.service/backup-strategies.json
+/.service/watchdog-notice.txt
+/config.json
+/utils/test results
+/utils/game_filter.enabled
+/lists/ipset-exclude-user.txt
+/lists/list-general-user.txt
+/lists/list-exclude-user.txt
+/lists/ipset-all.txt.bak
+/lists/ipset-all.test-backup.txt
+
+.vscode/
+/build/
+/ipset_switched.flag
+/strategies-user.json
