@@ -59,32 +59,33 @@ $xamlText = @'
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="OpenZapret" Height="780" Width="1180" MinHeight="680" MinWidth="980"
-        WindowStartupLocation="CenterScreen" Background="#0B1020" Foreground="#E8EEF8"
-        FontFamily="Segoe UI" ResizeMode="CanResize">
+        WindowStartupLocation="CenterScreen" Background="#0F141E" Foreground="#E8EEF8"
+        FontFamily="Segoe UI Variable, Segoe UI" ResizeMode="CanResize" TextOptions.TextRenderingMode="ClearType">
   <Window.Resources>
-    <SolidColorBrush x:Key="PanelBrush" Color="#131D31" />
-    <SolidColorBrush x:Key="PanelAltBrush" Color="#10192B" />
-    <SolidColorBrush x:Key="LineBrush" Color="#24314A" />
-    <SolidColorBrush x:Key="MutedBrush" Color="#91A0B8" />
+    <SolidColorBrush x:Key="PanelBrush" Color="#1C2335" />
+    <SolidColorBrush x:Key="PanelAltBrush" Color="#161E2F" />
+    <SolidColorBrush x:Key="LineBrush" Color="#2C374E" />
+    <SolidColorBrush x:Key="MutedBrush" Color="#8E9AB5" />
     <Style x:Key="NavButton" TargetType="Button">
-      <Setter Property="Foreground" Value="#C9D4E5" />
+      <Setter Property="Foreground" Value="#D6E1F5" />
       <Setter Property="Background" Value="Transparent" />
       <Setter Property="BorderThickness" Value="0" />
-      <Setter Property="Padding" Value="14,12" />
-      <Setter Property="Margin" Value="0,3,0,3" />
-      <Setter Property="FontSize" Value="14" />
+      <Setter Property="Padding" Value="14,10" />
+      <Setter Property="Margin" Value="6,2,6,2" />
+      <Setter Property="FontSize" Value="13.5" />
+      <Setter Property="FontWeight" Value="Normal" />
       <Setter Property="HorizontalContentAlignment" Value="Left" />
       <Setter Property="Cursor" Value="Hand" />
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="Button">
-            <Border x:Name="navBorder" Background="{TemplateBinding Background}" CornerRadius="11" Padding="{TemplateBinding Padding}">
+            <Border x:Name="navBorder" Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}" BorderThickness="0">
               <ContentPresenter VerticalAlignment="Center" />
             </Border>
             <ControlTemplate.Triggers>
-              <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="navBorder" Property="Background" Value="#1A2941" /></Trigger>
-              <Trigger Property="IsPressed" Value="True"><Setter TargetName="navBorder" Property="Background" Value="#243958" /></Trigger>
-              <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.42" /></Trigger>
+              <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="navBorder" Property="Background" Value="#242E42" /></Trigger>
+              <Trigger Property="IsPressed" Value="True"><Setter TargetName="navBorder" Property="Background" Value="#2E3A52" /></Trigger>
+              <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.4" /></Trigger>
             </ControlTemplate.Triggers>
           </ControlTemplate>
         </Setter.Value>
@@ -94,21 +95,21 @@ $xamlText = @'
       <Setter Property="Foreground" Value="White" />
       <Setter Property="Background" Value="#4F7DF3" />
       <Setter Property="BorderThickness" Value="0" />
-      <Setter Property="Padding" Value="18,12" />
-      <Setter Property="Margin" Value="0,0,10,0" />
-      <Setter Property="FontSize" Value="14" />
+      <Setter Property="Padding" Value="16,9" />
+      <Setter Property="Margin" Value="0,0,8,0" />
+      <Setter Property="FontSize" Value="13.5" />
       <Setter Property="FontWeight" Value="SemiBold" />
       <Setter Property="Cursor" Value="Hand" />
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="Button">
-            <Border x:Name="buttonBorder" Background="{TemplateBinding Background}" CornerRadius="11" Padding="{TemplateBinding Padding}">
+            <Border x:Name="buttonBorder" Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}">
               <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Border>
             <ControlTemplate.Triggers>
-              <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="buttonBorder" Property="Background" Value="#6790FF" /></Trigger>
-              <Trigger Property="IsPressed" Value="True"><Setter TargetName="buttonBorder" Property="Background" Value="#3B68D8" /></Trigger>
-              <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.38" /></Trigger>
+              <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="buttonBorder" Property="Background" Value="#5B85F5" /></Trigger>
+              <Trigger Property="IsPressed" Value="True"><Setter TargetName="buttonBorder" Property="Background" Value="#3D6BE0" /></Trigger>
+              <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.4" /></Trigger>
             </ControlTemplate.Triggers>
           </ControlTemplate>
         </Setter.Value>
@@ -125,11 +126,11 @@ $xamlText = @'
     </Style>
     <Style x:Key="CardBorder" TargetType="Border">
       <Setter Property="Background" Value="{StaticResource PanelBrush}" />
-      <Setter Property="BorderBrush" Value="{StaticResource LineBrush}" />
+      <Setter Property="BorderBrush" Value="#232D42" />
       <Setter Property="BorderThickness" Value="1" />
-      <Setter Property="CornerRadius" Value="16" />
-      <Setter Property="Padding" Value="20" />
-      <Setter Property="Margin" Value="0,0,14,14" />
+      <Setter Property="CornerRadius" Value="12" />
+      <Setter Property="Padding" Value="18" />
+      <Setter Property="Margin" Value="0,0,0,16" />
     </Style>
     <Style x:Key="SmallLabel" TargetType="TextBlock">
       <Setter Property="Foreground" Value="{StaticResource MutedBrush}" />
@@ -274,11 +275,11 @@ $xamlText = @'
         </StackPanel>
         <StackPanel Grid.Row="1">
           <TextBlock Text="РАБОЧЕЕ ПРОСТРАНСТВО" Style="{StaticResource SmallLabel}" Margin="12,0,0,9" />
-          <Button x:Name="navHome" Style="{StaticResource NavButton}" Content="◉   Обзор" Background="#1A2941" />
-          <Button x:Name="navStrategies" Style="{StaticResource NavButton}" Content="⚙   Стратегии" />
-          <Button x:Name="navNetwork" Style="{StaticResource NavButton}" Content="⇄   Сеть и DNS" />
-          <Button x:Name="navSites" Style="{StaticResource NavButton}" Content="◎   Мои сайты" />
-          <Button x:Name="navMore" Style="{StaticResource NavButton}" Content="⋯   Дополнительно" />
+          <Button x:Name="navHome" Style="{StaticResource NavButton}" Content="   Обзор" Background="#1A2941" />
+          <Button x:Name="navStrategies" Style="{StaticResource NavButton}" Content="   Стратегии" />
+          <Button x:Name="navNetwork" Style="{StaticResource NavButton}" Content="   Сеть и DNS" />
+          <Button x:Name="navSites" Style="{StaticResource NavButton}" Content="   Мои сайты" />
+          <Button x:Name="navMore" Style="{StaticResource NavButton}" Content="   Дополнительно" />
         </StackPanel>
         <StackPanel Grid.Row="2">
           <Border Height="1" Background="#202B40" Margin="0,0,0,16" />

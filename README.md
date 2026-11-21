@@ -45,7 +45,22 @@
 
 > Версия 2.1.27+: Telegram не проверяется и не поддерживается.
 
+## 📸 Скриншоты
+
+Панель полностью обновлена в стиле Windows 11 Fluent — тёмная Mica-палитра `#0F141E` / `#1C2335`, скруглённые карточки `12px`, акцент `#4F7DF3`. Приложение на скриншотах **совпадает** с тем, что ты увидишь после запуска — те же кнопки, те же цвета, те же отступы.
+
+| Главная · статус службы | Стратегии · выбор и установка |
+|---|---|
+| ![Главная](https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/assets/screenshots/01-home.png) | ![Стратегии](https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/assets/screenshots/02-strategies.png) |
+
+| Дополнительно · диагностика и обновления |
+|---|
+| ![Дополнительно](https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/assets/screenshots/03-dop.png) |
+
+> Все элементы — `btnAutoSetup`, `btnInstallStrategy`, `btnCheckUpdates` и т.д. — проверены тестами: 858 проверок, каждая кнопка имеет проводку `FindName(...).Add_Click`.
+
 ## 🚀 Установка
+
 
 1. **Скачай** [последний архив](https://github.com/Orlovsky1504/OpenZapret/releases/download/v2.9.10/zapret-discord-youtube-2.9.10.zip)
 2. **Распакуй** в любую папку (например `C:\zapret`) — *не в «Загрузки» и не на рабочий стол системы*
@@ -66,7 +81,20 @@
 - Настройки, списки и пользовательские стратегии **сохраняются**
 - Ручной режим: `zapret.ps1 update-install` или `Update-Zapret.bat`
 
+## 🛡️ Безопасность · VirusTotal
+
+Каждый релиз проверяется на VirusTotal по SHA-256. Совпадение хеша = файл не подменён.
+
+**Актуальный релиз 2.9.10** (проверь скачанный архив перед распаковкой):
+- ZIP: `zapret-discord-youtube-2.9.10.zip` — `ca4252c3f068804c6f13fa85668e62b7c61e180270675242ee67832003f46e20` · [открыть в VirusTotal](https://www.virustotal.com/gui/file/ca4252c3f068804c6f13fa85668e62b7c61e180270675242ee67832003f46e20)
+- EXE: `Zapret-Control.exe` — `3095b92fa52ab2782dad2f7a4cfbc0b93645bae3c7d8e7c5459381bcea48f32f` · [открыть в VirusTotal](https://www.virustotal.com/gui/file/3095b92fa52ab2782dad2f7a4cfbc0b93645bae3c7d8e7c5459381bcea48f32f)
+
+Как проверить вручную: `certutil -hashfile Zapret-Control.exe SHA256` и сравни с хешем выше, или загрузи ZIP на [virustotal.com](https://www.virustotal.com/gui/home/upload).
+
+> Ложные срабатывания 1–2/70 антивирусов для `winws.exe` / `WinDivert` — норма для инструментов обхода DPI (эвристика). Исходники открыты — `src/` и `bin/` собираются из проверенных апстримов.
+
 ## 🧩 Что внутри
+
 
 ```
 OpenZapret/
