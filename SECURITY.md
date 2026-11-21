@@ -11,7 +11,7 @@ any other privileged software.
 ## Verify what you run
 
 1. Download ONLY from the official release page:
-   https://github.com/Flowseal/zapret-discord-youtube/releases
+   https://github.com/Orlovsky1504/OpenZapret/releases
 2. Compare the SHA256 of the archive with the checksums printed in the
    release workflow logs.
 3. After extracting, run `zapret.bat` -> `Run Diagnostics` - it
