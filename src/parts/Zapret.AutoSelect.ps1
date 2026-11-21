@@ -230,8 +230,15 @@ function Get-CurlFailureReasonText {
 
 function Get-ProxyEnvNames {
     # Returns proxy-related environment variables that curl would honour.
+    # On Windows environment variables are case-insensitive: lower-case
+    # aliases resolve to the same variables, so probe canonical names only.
+    $names = if ($script:OnWindows) {
+        @('HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY')
+    } else {
+        @('HTTP_PROXY', 'http_proxy', 'HTTPS_PROXY', 'https_proxy', 'ALL_PROXY', 'all_proxy')
+    }
     $found = @()
-    foreach ($name in @('HTTP_PROXY', 'http_proxy', 'HTTPS_PROXY', 'https_proxy', 'ALL_PROXY', 'all_proxy')) {
+    foreach ($name in $names) {
         $value = [Environment]::GetEnvironmentVariable($name)
         if ($value) { $found += ('{0}={1}' -f $name, $value) }
     }
