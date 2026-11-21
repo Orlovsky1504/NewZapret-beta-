@@ -1,8 +1,8 @@
 IDI_APPICON ICON "../Zapret-Control.ico"
 
 1 VERSIONINFO
- FILEVERSION 2,9,10,0
- PRODUCTVERSION 2,9,10,0
+ FILEVERSION 2,9,12,0
+ PRODUCTVERSION 2,9,12,0
  FILEFLAGSMASK 0x3fL
  FILEFLAGS 0x0L
  FILEOS 0x40004L
@@ -15,12 +15,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "OpenZapret"
             VALUE "FileDescription", "OpenZapret"
-            VALUE "FileVersion", "2.9.10.0"
+            VALUE "FileVersion", "2.9.12.0"
             VALUE "InternalName", "Zapret-Control"
             VALUE "LegalCopyright", "MIT License"
             VALUE "OriginalFilename", "Zapret-Control.exe"
             VALUE "ProductName", "OpenZapret"
-            VALUE "ProductVersion", "2.9.10.0"
+            VALUE "ProductVersion", "2.9.12.0"
         END
     END
     BLOCK "VarFileInfo"
