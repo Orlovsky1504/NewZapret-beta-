@@ -1,7 +1,7 @@
 {
   "version": "2.9.1",
   "published": "2026-11-20",
-  "zipUrl": "https://example.com/zapret-discord-youtube-2.9.1.zip",
+  "zipUrl": "https://github.com/Orlovsky1504/OpenZapret/releases/download/2.9.1/zapret-discord-youtube-2.9.1.zip",
   "sha256": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
   "minVersion": "2.6.0",
   "notes": [

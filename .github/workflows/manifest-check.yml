@@ -1,0 +1,45 @@
+name: Manifest check
+
+# Сверяет update-manifest.json с реально опубликованным ZIP: клиенты берут хеш и ссылку отсюда.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 4 * * *'
+  push:
+    branches: [main]
+    paths:
+      - update-manifest.json
+      - .github/workflows/manifest-check.yml
+  pull_request:
+    paths:
+      - update-manifest.json
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify manifest against the published ZIP
+        run: |
+          set -euo pipefail
+          VERSION=$(jq -r '.version' update-manifest.json)
+          URL=$(jq -r '.zipUrl' update-manifest.json)
+          SHA=$(jq -r '.sha256' update-manifest.json | tr 'A-F' 'a-f')
+
+          ALLOWED='^https://github\.com/Orlovsky1504/OpenZapret/releases/download/[A-Za-z0-9._-]+/[A-Za-z0-9._-]+\.zip$'
+          if [[ ! "$URL" =~ $ALLOWED ]]; then echo "::error::zipUrl is not an official release URL: $URL"; exit 1; fi
+          if [[ ! "$SHA" =~ ^[a-f0-9]{64}$ ]]; then echo "::error::sha256 is not a valid SHA-256: $SHA"; exit 1; fi
+          EXPECTED_URL="https://github.com/Orlovsky1504/OpenZapret/releases/download/${VERSION}/zapret-discord-youtube-${VERSION}.zip"
+          if [ "$URL" != "$EXPECTED_URL" ]; then echo "::error::zipUrl does not match version $VERSION (expected $EXPECTED_URL)"; exit 1; fi
+
+          curl -fsSL --retry 3 -o published.zip "$URL"
+          ACTUAL=$(sha256sum published.zip | cut -d' ' -f1)
+          echo "manifest : $SHA"
+          echo "published: $ACTUAL"
+          if [ "$ACTUAL" != "$SHA" ]; then echo "::error::update-manifest.json sha256 does not match the published ZIP"; exit 1; fi
+          echo "Manifest matches the published ZIP for $VERSION"

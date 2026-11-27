@@ -7,6 +7,10 @@ on:
         description: 'Release tag (X.Y.Z, must match .service/version.txt)'
         required: true
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -65,41 +69,6 @@ jobs:
           sha256sum --check SHA256SUMS.txt
           cat SHA256SUMS.txt
 
-      - name: Sync update-manifest.json with real ZIP sha256
-        run: |
-          ZIP_SHA=$(cut -d' ' -f1 SHA256SUMS.txt | head -n1)
-          echo "ZIP_SHA=$ZIP_SHA"
-          if [ -z "$ZIP_SHA" ]; then echo "ZIP_SHA empty"; exit 1; fi
-          # ensure jq exists
-          sudo apt-get update -qq && sudo apt-get install -y -qq jq
-          jq --arg sha "$ZIP_SHA" --arg ver "$TAG" '.sha256 = $sha | .version = $ver | .published = (now | strftime("%Y-%m-%d"))' update-manifest.json > /tmp/update-manifest.json && mv /tmp/update-manifest.json update-manifest.json
-          cat update-manifest.json
-          git config user.name "NewZapret Release Bot"
-          git config user.email "release-bot@users.noreply.github.com"
-          git add update-manifest.json
-          if git diff --cached --quiet; then
-            echo "manifest already current"
-          else
-            git commit -m "chore: sync manifest $TAG $ZIP_SHA"
-            git push origin HEAD:main
-            echo "manifest synced and pushed"
-          fi
-
-      - name: Update VirusTotal docs (auto)
-        shell: pwsh
-        run: |
-          $zipHash = (Get-FileHash -LiteralPath "zapret-discord-youtube-$env:TAG.zip" -Algorithm SHA256).Hash.ToLower()
-          Write-Host "ZIP $env:TAG hash $zipHash"
-          ./tools/Update-VirusTotalDocs.ps1 -Version "$env:TAG"
-          if (git status --porcelain README.md assets/screenshots/virustotal-links.html) {
-            git config user.name "NewZapret Release Bot"
-            git config user.email "release-bot@users.noreply.github.com"
-            git add README.md assets/screenshots/virustotal-links.html
-            git commit -m "docs: VirusTotal $env:TAG — auto-update hashes"
-            git push origin HEAD:main
-            Write-Host "VirusTotal docs pushed"
-          } else { Write-Host "VirusTotal docs already current" }
-
       - name: Generate release notes from CHANGELOG
         shell: bash
         run: |
@@ -135,3 +104,70 @@ jobs:
             zapret-discord-youtube-${{ env.TAG }}.rar
             zapret-discord-youtube-${{ env.TAG }}.tar.gz
             SHA256SUMS.txt
+
+      # Всё ниже выполняется ТОЛЬКО после того, как релиз создан. Клиенты читают update-manifest.json
+      # из main, поэтому он публикуется последним: пока ZIP не опубликован и его хеш не сверен,
+      # манифест продолжает указывать на предыдущий (существующий) релиз.
+      - name: Verify published ZIP matches the local build
+        run: |
+          NAME="zapret-discord-youtube-${TAG}"
+          URL="https://github.com/Orlovsky1504/OpenZapret/releases/download/${TAG}/${NAME}.zip"
+          EXPECTED=$(awk -v n="${NAME}.zip" '$2 == n { print $1 }' SHA256SUMS.txt)
+          if [ -z "$EXPECTED" ]; then echo "No SHA-256 for ${NAME}.zip in SHA256SUMS.txt"; exit 1; fi
+          ok=0
+          for attempt in 1 2 3 4 5 6; do
+            if curl -fsSL --retry 3 -o published.zip "$URL"; then ok=1; break; fi
+            echo "Release asset not downloadable yet (attempt $attempt), retrying..."
+            sleep 10
+          done
+          if [ "$ok" != 1 ]; then echo "Could not download $URL"; exit 1; fi
+          ACTUAL=$(sha256sum published.zip | cut -d' ' -f1)
+          echo "expected=$EXPECTED"
+          echo "published=$ACTUAL"
+          if [ "$ACTUAL" != "$EXPECTED" ]; then echo "Published ZIP hash differs from the local build"; exit 1; fi
+          rm -f published.zip
+          echo "ZIP_SHA=$EXPECTED" >> "$GITHUB_ENV"
+
+      - name: Publish update-manifest.json (last step)
+        run: |
+          command -v jq >/dev/null || sudo apt-get install -y -qq jq
+          NAME="zapret-discord-youtube-${TAG}"
+          ZIP_URL="https://github.com/Orlovsky1504/OpenZapret/releases/download/${TAG}/${NAME}.zip"
+          TITLE=$(grep -m1 "^## ${TAG} " CHANGELOG.md | tr -d '\r' | sed -E 's/^## +[^ ]+ +[^ ]+ +[^ ]+ +[^ ]+ +//' || true)
+          jq --arg sha "$ZIP_SHA" --arg ver "$TAG" --arg url "$ZIP_URL" --arg date "$(date -u +%F)" --arg note "$TITLE" \
+            '.sha256 = $sha | .version = $ver | .zipUrl = $url | .published = $date | (if $note != "" then .notes = [$note] else . end)' \
+            update-manifest.json > "$RUNNER_TEMP/update-manifest.json"
+          mv "$RUNNER_TEMP/update-manifest.json" update-manifest.json
+          cat update-manifest.json
+          git config user.name "NewZapret Release Bot"
+          git config user.email "release-bot@users.noreply.github.com"
+          git add update-manifest.json
+          if git diff --cached --quiet; then
+            echo "manifest already current"
+            exit 0
+          fi
+          git commit -m "chore: sync manifest ${TAG} ${ZIP_SHA}"
+          for attempt in 1 2 3; do
+            if git pull --rebase origin main && git push origin HEAD:main; then echo "manifest published"; exit 0; fi
+            sleep 5
+          done
+          echo "Could not push the manifest"
+          exit 1
+
+      - name: Update VirusTotal docs (non-critical)
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          ./tools/Update-VirusTotalDocs.ps1 -Version "$env:TAG"
+          if (git status --porcelain README.md assets/screenshots/virustotal-links.html) {
+            git config user.name "NewZapret Release Bot"
+            git config user.email "release-bot@users.noreply.github.com"
+            git add README.md assets/screenshots/virustotal-links.html
+            git commit -m "docs: VirusTotal $env:TAG - auto-update hashes"
+            for ($i = 1; $i -le 3; $i++) {
+              git pull --rebase origin main
+              git push origin HEAD:main
+              if ($LASTEXITCODE -eq 0) { Write-Host "VirusTotal docs pushed"; break }
+              Start-Sleep -Seconds 5
+            }
+          } else { Write-Host "VirusTotal docs already current" }

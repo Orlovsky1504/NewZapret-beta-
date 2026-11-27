@@ -1521,6 +1521,19 @@ Check 'release package validates version and requires .service, binary and instr
 Check 'release workflow creates, verifies, and publishes SHA256SUMS.txt' ($releaseText.Contains('> SHA256SUMS.txt') -and $releaseText.Contains('sha256sum --check SHA256SUMS.txt') -and $releaseText.Contains('            SHA256SUMS.txt'))
 Check 'release builder creates and verifies its own SHA256SUMS.txt' ($releaseBuilderText.Contains('Test-ChecksumManifest') -and $releaseBuilderText.Contains("Join-Path `$outputRoot 'SHA256SUMS.txt'"))
 Check 'release workflow passes the tag via env' ($releaseText -match '(?m)^\s*TAG:')
+$vtDocsText = [IO.File]::ReadAllText((Join-Path $repoRoot 'tools\Update-VirusTotalDocs.ps1'))
+$manifestCheckPath = Join-Path $repoRoot '.github\workflows\manifest-check.yml'
+$releasePublishIdx = $releaseText.IndexOf('Publish update-manifest.json')
+$releaseCreateIdx = $releaseText.IndexOf('softprops/action-gh-release')
+$releaseFirstPush = $releaseText.IndexOf('git push origin HEAD:main')
+Check 'release workflow publishes the update manifest only after the release exists' ($releaseCreateIdx -gt 0 -and $releasePublishIdx -gt $releaseCreateIdx -and $releaseFirstPush -gt $releaseCreateIdx)
+Check 'release workflow verifies the published ZIP hash before publishing the manifest' ($releaseText.Contains('Verify published ZIP matches the local build') -and $releaseText.IndexOf('Verify published ZIP matches the local build') -lt $releasePublishIdx)
+Check 'release workflow writes zipUrl into the manifest' ($releaseText.Contains('.zipUrl = $url'))
+Check 'release workflow uses LF line endings only' (-not $releaseText.Contains([string][char]13))
+Check 'manifest-check workflow compares the manifest with the published ZIP' ((Test-Path -LiteralPath $manifestCheckPath) -and ([IO.File]::ReadAllText($manifestCheckPath)).Contains('sha256sum published.zip'))
+Check '.gitattributes pins LF for workflows' ([IO.File]::ReadAllText((Join-Path $repoRoot '.gitattributes')).Contains('*.yml text eol=lf'))
+Check 'VirusTotal docs script fails loudly when a README block is missing' ($vtDocsText.Contains('не найдена нижняя таблица') -and $vtDocsText.Contains('не найден верхний блок') -and -not $vtDocsText.Contains('скачать ZIP[^'))
+Check 'README has no blank lines inside tables' (-not ((Get-Content (Join-Path $repoRoot 'README.md') -Raw) -match '(?m)^\|[^\n]*\r?\n\r?\n\|'))
 if ((Test-Path -LiteralPath (Join-Path $repoRoot '.git')) -and (Get-Command git -ErrorAction SilentlyContinue)) {
     $releaseBuildTemp = Join-Path ([IO.Path]::GetTempPath()) ('zapret-release-build-{0}' -f [Guid]::NewGuid().ToString('N'))
     try {
@@ -1966,19 +1979,20 @@ Check 'update version compare: equal versions' ((Compare-ZapretUpdateVersions -L
 Check 'update version compare: equal letter versions' ((Compare-ZapretUpdateVersions -Left '2.8.1a' -Right '2.8.1a') -eq 0)
 Check 'update version compare: garbage is null' ($null -eq (Compare-ZapretUpdateVersions -Left 'нет' -Right '2.8.5'))
 
+$validZipUrl = 'https://github.com/Orlovsky1504/OpenZapret/releases/download/2.9.1/zapret-discord-youtube-2.9.1.zip'
 $goodManifestRaw = [pscustomobject]@{
     version = '2.9.1'; published = '2026-11-20'
-    zipUrl  = 'https://example.com/zapret-discord-youtube-2.9.1.zip'
+    zipUrl  = $validZipUrl
     sha256  = ('a' * 64); minVersion = '2.6.0'
     notes   = @('Исправлено: то', "строка`nс контролем", '')
 }
 $goodManifest = ConvertTo-ZapretUpdateManifest -Raw $goodManifestRaw
 Check 'update manifest: valid payload passes' ($goodManifest.Ok -and $goodManifest.Manifest.Version -eq '2.9.1' -and $goodManifest.Manifest.Sha256 -eq ('A' * 64))
 Check 'update manifest: notes lose control chars and empty lines' ($goodManifest.Manifest.Notes.Count -eq 2)
-Check 'update manifest: bad sha256 rejected' (-not (ConvertTo-ZapretUpdateManifest -Raw ([pscustomobject]@{ version = '2.9.1'; zipUrl = 'https://e.com/a.zip'; sha256 = 'xyz' })).Ok)
+Check 'update manifest: bad sha256 rejected' (-not (ConvertTo-ZapretUpdateManifest -Raw ([pscustomobject]@{ version = '2.9.1'; zipUrl = $validZipUrl; sha256 = 'xyz' })).Ok)
 Check 'update manifest: missing zipUrl rejected' (-not (ConvertTo-ZapretUpdateManifest -Raw ([pscustomobject]@{ version = '2.9.1'; sha256 = ('a' * 64) })).Ok)
-Check 'update manifest: bad version rejected' (-not (ConvertTo-ZapretUpdateManifest -Raw ([pscustomobject]@{ version = 'vNext'; zipUrl = 'https://e.com/a.zip'; sha256 = ('a' * 64) })).Ok)
-Check 'update manifest: bad minVersion rejected' (-not (ConvertTo-ZapretUpdateManifest -Raw ([pscustomobject]@{ version = '2.9.1'; zipUrl = 'https://e.com/a.zip'; sha256 = ('a' * 64); minVersion = '2' })).Ok)
+Check 'update manifest: bad version rejected' (-not (ConvertTo-ZapretUpdateManifest -Raw ([pscustomobject]@{ version = 'vNext'; zipUrl = $validZipUrl; sha256 = ('a' * 64) })).Ok)
+Check 'update manifest: bad minVersion rejected' (-not (ConvertTo-ZapretUpdateManifest -Raw ([pscustomobject]@{ version = '2.9.1'; zipUrl = $validZipUrl; sha256 = ('a' * 64); minVersion = '2' })).Ok)
 Check 'update manifest: null payload rejected' (-not (ConvertTo-ZapretUpdateManifest -Raw $null).Ok)
 Check 'update manifest: javascript: url rejected' (-not (ConvertTo-ZapretUpdateManifest -Raw ([pscustomobject]@{ version = '2.9.1'; zipUrl = 'javascript:alert(1)'; sha256 = ('a' * 64) })).Ok)
 
@@ -1986,7 +2000,7 @@ Check 'update manifest: javascript: url rejected' (-not (ConvertTo-ZapretUpdateM
 $repoManifestText = [IO.File]::ReadAllText((Join-Path $repoRoot 'update-manifest.json'))
 $repoManifestCheck = ConvertTo-ZapretUpdateManifest -Raw ($repoManifestText | ConvertFrom-Json)
 Check 'repo update-manifest.json is valid' ($repoManifestCheck.Ok -and $repoManifestCheck.Manifest.Sha256 -match '^[A-F0-9]{64}$')
-Check 'repo update-manifest version tracks version.txt' ($repoManifestCheck.Manifest.Version -eq ([IO.File]::ReadAllText((Join-Path $repoRoot '.service\version.txt'))).Trim())
+Check 'repo update-manifest never points past version.txt (published last by the release workflow)' ((Compare-ZapretUpdateVersions -Left $repoManifestCheck.Manifest.Version -Right ([IO.File]::ReadAllText((Join-Path $repoRoot '.service\version.txt'))).Trim()) -le 0)
 Check 'root version.txt tracks .service/version.txt' (([IO.File]::ReadAllText((Join-Path $repoRoot 'version.txt'))).Trim() -eq ([IO.File]::ReadAllText((Join-Path $repoRoot '.service\version.txt'))).Trim())
 $readmeBadgeVer = [regex]::Match([IO.File]::ReadAllText((Join-Path $repoRoot 'README.md')), 'badge/версия-(\d+\.\d+\.\d+[a-z]?)-').Groups[1].Value
 Check 'README version badge tracks .service/version.txt' ($readmeBadgeVer -eq ([IO.File]::ReadAllText((Join-Path $repoRoot '.service\version.txt'))).Trim())
@@ -2000,7 +2014,7 @@ Check 'update config: feed and auto-install round-trip' ((Get-Config).updateFeed
 [void](Update-Config @{ updateFeed = $null; autoInstallUpdates = $false })
 
 $manifestFile = Join-Path ([IO.Path]::GetTempPath()) ('update-manifest-test-' + [Guid]::NewGuid().ToString('N') + '.json')
-$manifestText = '{ "version": "2.9.1", "zipUrl": "https://example.com/z.zip", "sha256": "' + ('b' * 64) + '", "notes": ["x"] }'
+$manifestText = '{ "version": "2.9.1", "zipUrl": "' + $validZipUrl + '", "sha256": "' + ('b' * 64) + '", "notes": ["x"] }'
 [IO.File]::WriteAllText($manifestFile, $manifestText)
 $fileFeed = 'file://' + ($manifestFile -replace '\\', '/')
 $manifestFromFeed = Get-ZapretUpdateManifest -Url $fileFeed
@@ -2022,12 +2036,31 @@ Check 'gui check-updates button runs the update probe with dialogs' ($controlTex
 Check 'gui auto-install passes the manifest without closures' ($controlTextAll -match 'ArgumentList @\(\$Offer\.Manifest\)')
 
 # --- Wave 6 fixes (2.9.1) ---
-$spacePathManifest = ConvertTo-ZapretUpdateManifest -Raw ([pscustomobject]@{ version = '2.9.1'; zipUrl = 'C:\My Folder\z.zip'; sha256 = ('a' * 64) })
-Check 'update manifest: zip paths keep their spaces' ($spacePathManifest.Ok -and $spacePathManifest.Manifest.ZipUrl -eq 'C:\My Folder\z.zip')
+$badZipSources = @(
+    'http://github.com/Orlovsky1504/OpenZapret/releases/download/2.9.1/z.zip',
+    'file:///C:/Temp/z.zip',
+    'C:\My Folder\z.zip',
+    '\\server\share\z.zip',
+    'https://example.com/Orlovsky1504/OpenZapret/releases/download/2.9.1/z.zip',
+    'https://github.com.evil.example/Orlovsky1504/OpenZapret/releases/download/2.9.1/z.zip',
+    'https://github.com@evil.example/Orlovsky1504/OpenZapret/releases/download/2.9.1/z.zip',
+    'https://github.com:8443/Orlovsky1504/OpenZapret/releases/download/2.9.1/z.zip',
+    'https://github.com/Other/OpenZapret/releases/download/2.9.1/z.zip',
+    'https://github.com/Orlovsky1504/OpenZapret/releases/download/../../../evil/z.zip',
+    'https://github.com/Orlovsky1504/OpenZapret/releases/download/2.9.1/z.zip?x=1',
+    'https://github.com/Orlovsky1504/OpenZapret/releases/download/2.9.1/z.exe'
+)
+foreach ($badZip in $badZipSources) {
+    $badZipResult = ConvertTo-ZapretUpdateManifest -Raw ([pscustomobject]@{ version = '2.9.1'; zipUrl = $badZip; sha256 = ('a' * 64) })
+    Check ('update manifest: zip source rejected: ' + $badZip) (-not $badZipResult.Ok)
+}
+Check 'update manifest: official release zip url is accepted' ((ConvertTo-ZapretUpdateManifest -Raw ([pscustomobject]@{ version = '2.9.1'; zipUrl = $validZipUrl; sha256 = ('a' * 64) })).Ok)
+$untrustedInstall = Install-ZapretUpdate -Manifest ([pscustomobject]@{ Version = '2.9.1'; ZipUrl = 'http://example.com/z.zip'; Sha256 = ('A' * 64) })
+Check 'update install: refuses a ZIP source outside the official releases' (-not $untrustedInstall.Ok -and $untrustedInstall.Error -match 'не разрешён')
 
 $feedManifestFile = Join-Path ([IO.Path]::GetTempPath()) ('update-manifest-test-' + [Guid]::NewGuid().ToString('N') + '.json')
 $writeFeed = { param($Version, $Min)
-    $json = '{ "version": "' + $Version + '", "zipUrl": "https://e.com/z.zip", "sha256": "' + ('c' * 64) + '"'
+    $json = '{ "version": "' + $Version + '", "zipUrl": "' + $validZipUrl + '", "sha256": "' + ('c' * 64) + '"'
     if ($Min) { $json += ', "minVersion": "' + $Min + '"' }
     $json += ' }'
     [IO.File]::WriteAllText($feedManifestFile, $json)
@@ -2049,6 +2082,7 @@ $ipsetTextAll = [IO.File]::ReadAllText((Join-Path $repoRoot 'src\parts\Zapret.Ip
 Check 'update install writes SHA256SUMS.txt next to the downloaded ZIP' ($ipsetTextAll -match 'SHA256SUMS\.txt' -and $ipsetTextAll -match 'WriteAllText\(\$sumsPath')
 Check 'update install uses a private work dir, not shared TEMP' ($ipsetTextAll -match "zapret_update_' \+ \[Guid\]::NewGuid" -and $ipsetTextAll -match 'Remove-Item -LiteralPath \$workDir -Recurse')
 Check 'update install keeps TargetRoot quoting intact on drive roots' ($ipsetTextAll -match 'rootArg -match')
+Check 'update install has no SHA256SUMS.txt fallback from the release' (-not $ipsetTextAll.Contains('SHA256SUMS.txt.remote') -and -not $ipsetTextAll.Contains('sha fallback') -and -not $ipsetTextAll.Contains('Манифест устарел'))
 
 $zapretTextAll = [IO.File]::ReadAllText((Join-Path $repoRoot 'zapret.ps1'))
 Check 'check-updates and update-install no longer demand elevation up front' ($zapretTextAll.Contains("'check-updates' { `$needsAdmin = `$false }") -and $zapretTextAll.Contains("'update-install' { `$needsAdmin = `$false }"))

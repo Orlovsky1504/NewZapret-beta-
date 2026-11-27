@@ -60,86 +60,77 @@ foreach ($b in $bins) {
 if ($zipHash) {
   $lines += "<div class=card><b>ZIP $Version</b><br><code>$zipHash</code><br><a href=`"https://www.virustotal.com/gui/file/$zipHash`">VT ZIP</a> — <a href=`"https://github.com/$repo/releases/download/$Version/$zipName`">download ZIP</a></div>"
 }
-$lines += "<p style=`"color:#91A0B8`">Generated $(Get-Date -Format 'yyyy-MM-dd HH:mm') UTC — $Version — VirusTotal check: open any link.</p>"
+$lines += "<p style=`"color:#91A0B8`">Generated $((Get-Date).ToUniversalTime().ToString('yyyy-MM-dd HH:mm')) UTC — $Version — VirusTotal check: open any link.</p>"
 [IO.File]::WriteAllText($outHtml, ($lines -join "`n"), (New-Object System.Text.UTF8Encoding($false)))
 Write-Host "Updated $outHtml"
 
-# 2) Обновить README.md — заменить все таблицы VirusTotal на актуальные
+# 2) Обновить README.md — верхний блок и нижняя таблица. Работаем с LF внутри, на диск пишем CRLF
+#    (как требует .gitattributes). Если нужный блок не найден — это ошибка, а не тихий пропуск.
 $readmePath = Join-Path $root 'README.md'
-$readme = [IO.File]::ReadAllText($readmePath)
+$readme = ([IO.File]::ReadAllText($readmePath)) -replace "`r`n", "`n"
+$readmeBefore = $readme
 
-function Build-Table($includeZip) {
-  $rows = @()
-  $rows += '| Файл | SHA256 | VirusTotal |'
-  $rows += '|---|---|---|'
+function Build-RowList {
+  $rows = @('| Файл | SHA256 | VirusTotal |', '|---|---|---|')
   foreach ($b in $bins) {
     $h = $hashMap[$b.Rel]
     if (-not $h) { continue }
-    $rows += "| $($b.Label) | ``$h`` | [открыть](https://www.virustotal.com/gui/file/$h) |"
+    $rows += ('| {0} | `{1}` | [открыть](https://www.virustotal.com/gui/file/{1}) |' -f $b.Label, $h)
   }
-  if ($includeZip -and $zipHash) {
-    $rows += "| **ZIP $Version** | ``$zipHash`` | [открыть](https://www.virustotal.com/gui/file/$zipHash) — [скачать ZIP](https://github.com/Orlovsky1504/OpenZapret/releases/download/$Version/$zipName) |"
+  if ($zipHash) {
+    $rows += ('| **ZIP {0}** | `{1}` | [открыть](https://www.virustotal.com/gui/file/{1}) — [скачать ZIP](https://github.com/{2}/releases/download/{0}/{3}) |' -f $Version, $zipHash, $repo, $zipName)
   }
-  return ($rows -join "`n")
+  return $rows
 }
 
-# Верхний IMPORTANT блок — между "> [!IMPORTANT]" и "<sub>Ложные"
-$topTable = Build-Table $true
-# Заменяем старый верхний блок (детектим по заголовку)
-$patternTop = '(?s)> \[!IMPORTANT\].*?<sub>Ложные.*?инструментов \(эвристика\).*?</sub>'
-$replacementTop = @"
-> [!IMPORTANT]
-> #### 🛡️ Безопасность — проверено на VirusTotal (сгенерировано на ``windows-latest``)
-> Все бинари собираются на чистой Windows в Actions из открытых исходников. Открой любой файл на VirusTotal и сверь SHA256 — совпадение = файл не подменён.
->
-$($topTable -replace '^','> ' -replace "`n","`n> ")
->
-> Проверка: ``certutil -hashfile bin\\winws.exe SHA256`` и сравни с таблицей · Полный отчёт: [``assets/screenshots/virustotal-links.html``](https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/assets/screenshots/virustotal-links.html) (артефакт ``virustotal-proof`` на ``windows-latest``).
->
-> <sub>Ложные 1–2/70 детекты для ``winws.exe``/``WinDivert`` — норма для DPI-инструментов (эвристика). Исходники ``src/``+``bin/`` открыты и собираются на чистой GH Windows.</sub>
-"@
-if ($readme -match $patternTop) {
-  $readme = [regex]::Replace($readme, $patternTop, $replacementTop)
-  Write-Host "README top block updated"
+# Верхний блок: от "> [!IMPORTANT]" до закрывающего </sub>
+$topLines = @(
+  '> [!IMPORTANT]',
+  '> #### 🛡️ Безопасность — проверено на VirusTotal (сгенерировано на `windows-latest`)',
+  '> Все бинари собираются на чистой Windows в Actions из открытых исходников. Открой любой файл на VirusTotal и сверь SHA256 — совпадение = файл не подменён.',
+  '>'
+)
+$topLines += @(Build-RowList | ForEach-Object { '> ' + $_ })
+$topLines += @(
+  '>',
+  '> Проверка: `certutil -hashfile bin\winws.exe SHA256` и сравни с таблицей · Полный отчёт: [`assets/screenshots/virustotal-links.html`](https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/assets/screenshots/virustotal-links.html) (артефакт `virustotal-proof` на `windows-latest`).',
+  '>',
+  '> <sub>Ложные 1–2/70 детекты для `winws.exe`/`WinDivert` — норма для DPI-инструментов (эвристика). Исходники `src/`+`bin/` открыты и собираются на чистой GH Windows.</sub>'
+)
+$topBlock = $topLines -join "`n"
+$patternTop = '(?s)> \[!IMPORTANT\].*?<sub>Ложные.*?</sub>'
+if (-not [regex]::IsMatch($readme, $patternTop)) { throw 'README.md: не найден верхний блок "> [!IMPORTANT] ... <sub>Ложные ... </sub>"' }
+$readme = [regex]::Replace($readme, $patternTop, [Text.RegularExpressions.MatchEvaluator]{ param($m) $topBlock })
+Write-Host 'README top block updated'
+
+# Нижняя секция: заголовок "**Актуальный релиз ...**" + следом таблица "| Что | SHA256 | VirusTotal |" (строки подряд)
+$bottomLines = @(
+  ('**Актуальный релиз {0} — проверь перед распаковкой** (`windows-latest` пруф):' -f $Version),
+  '',
+  '| Что | SHA256 | VirusTotal |',
+  '|---|---|---|'
+)
+foreach ($b in $bins) {
+  $h = $hashMap[$b.Rel]
+  if (-not $h) { continue }
+  $bottomLines += ('| `{0}` | `{1}` | [открыть](https://www.virustotal.com/gui/file/{1}) |' -f ($b.Label -replace '`', ''), $h)
 }
-
-# Нижняя секция "Безопасность · VirusTotal" — между "**Актуальный релиз" и "> Пруф:"
-$bottomTable = Build-Table $true
-$patternBottom = '(?s)\*\*Актуальный релиз.*?<table>.*?</table>|(?s)\*\*Актуальный релиз.*?> Пруф:'
-# проще: найти заголовок и заменить следующую таблицу
-if ($readme -match '\*\*Актуальный релиз') {
-  # заменить блок таблицы целиком
-  $patternB = '(?s)\*\*Актуальный релиз[^`]*?```.*?```|\*\*Актуальный релиз.*?\n\n\| Что \| SHA256.*?\[скачать ZIP[^\n]*\n'
-  # fallback: ищем таблицу по "| Что | SHA256"
-  if ($readme -match '\| Что \| SHA256') {
-    $oldBottom = [regex]::Match($readme, '(?s)\| Что \| SHA256.*?\[скачать ZIP[^\n]*\n').Value
-    if ($oldBottom) {
-      $newBottom = @"
-**Актуальный релиз $Version — проверь перед распаковкой** (``windows-latest`` пруф):
-
-| Что | SHA256 | VirusTotal |
-|---|---|---|
-"@
-      foreach ($b in $bins) {
-        $h = $hashMap[$b.Rel]
-        if (-not $h) { continue }
-        $label = $b.Label -replace '`',''
-        $newBottom += "| ``$label`` | ``$h`` | [открыть](https://www.virustotal.com/gui/file/$h) |`n"
-      }
-      if ($zipHash) {
-        $newBottom += "| ZIP ``$zipName`` | ``$zipHash`` | [открыть](https://www.virustotal.com/gui/file/$zipHash) |`n"
-      }
-      $newBottom += "`n> Пруф: хэши посчитаны на чистой ``windows-latest`` (артефакт ``virustotal-proof`` + [``virustotal-links.html``](https://raw.githubusercontent.com/Orlovsky1504/OpenZapret/main/assets/screenshots/virustotal-links.html))."
-      $readme = $readme.Replace($oldBottom, $newBottom + "`n")
-      Write-Host "README bottom section updated"
-    }
-  }
+if ($zipHash) {
+  $bottomLines += ('| ZIP `{0}` | `{1}` | [открыть](https://www.virustotal.com/gui/file/{1}) |' -f $zipName, $zipHash)
 }
+$bottomBlock = ($bottomLines -join "`n") + "`n"
+$patternBottom = '(?m)^\*\*Актуальный релиз [^\n]*\n\n\| Что \| SHA256 \| VirusTotal \|\n(?:\|[^\n]*(?:\n|\z))+'
+if (-not [regex]::IsMatch($readme, $patternBottom)) { throw 'README.md: не найдена нижняя таблица "**Актуальный релиз ...** + | Что | SHA256 | VirusTotal |"' }
+$readme = [regex]::Replace($readme, $patternBottom, [Text.RegularExpressions.MatchEvaluator]{ param($m) $bottomBlock })
+Write-Host 'README bottom section updated'
 
-# Бейджи версии в шапке — обновить 2.9.13 -> $Version
-$readme = $readme -replace 'версия-2\.9\.13', "версия-$Version"
-$readme = $readme -replace 'download/v2\.9\.13/', "download/$Version/"
-$readme = $readme -replace 'zapret-discord-youtube-2\.9\.13\.zip', "zapret-discord-youtube-$Version.zip"
+# Бейдж версии и ссылки на ZIP — на текущую версию (любую предыдущую, не только 2.9.13)
+$readme = [regex]::Replace($readme, 'версия-\d+\.\d+\.\d+[A-Za-z]?(?=-)', "версия-$Version")
+$readme = [regex]::Replace($readme, 'releases/download/[^/\s)]+/zapret-discord-youtube-[^/\s)]+\.zip', "releases/download/$Version/$zipName")
 
-[IO.File]::WriteAllText($readmePath, $readme, (New-Object System.Text.UTF8Encoding($false)))
-Write-Host "README updated to $Version — done"
+if ($readme -ceq $readmeBefore) {
+  Write-Host "README already current ($Version) — nothing to write"
+} else {
+  [IO.File]::WriteAllText($readmePath, ($readme -replace "`n", "`r`n"), (New-Object System.Text.UTF8Encoding($false)))
+  Write-Host "README updated to $Version — done"
+}

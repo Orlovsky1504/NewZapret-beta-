@@ -477,6 +477,20 @@ function Compare-ZapretUpdateVersions {
     return [Math]::Sign([string]::CompareOrdinal($l.Build, $r.Build))
 }
 
+function Test-ZapretUpdateZipUrl {
+    # Pure. The update ZIP is installed with administrator rights, so the only
+    # accepted source is a release asset of this repository over HTTPS.
+    # http://, file://, UNC and drive paths, other hosts, userinfo, ports,
+    # queries/fragments and dot-segments are all rejected.
+    param([string]$Url)
+    if ([string]::IsNullOrWhiteSpace($Url)) { return $false }
+    $pattern = '^https://github\.com/Orlovsky1504/OpenZapret/releases/download/(?<tag>[A-Za-z0-9._-]+)/(?<file>[A-Za-z0-9._-]+\.zip)\z'
+    $match = [regex]::Match($Url, $pattern, [Text.RegularExpressions.RegexOptions]::IgnoreCase)
+    if (-not $match.Success) { return $false }
+    if ($match.Groups['tag'].Value -match '^\.+$') { return $false }
+    return $true
+}
+
 function ConvertTo-ZapretUpdateManifest {
     # Pure. Validates a decoded update-manifest.json payload.
     # Returns { Ok; Manifest; Error }; Manifest = { Version; ZipUrl; Sha256; Published; Notes; MinVersion }.
@@ -493,9 +507,8 @@ function ConvertTo-ZapretUpdateManifest {
 
     $zipUrl = ''
     if ($Raw.PSObject.Properties['zipUrl']) { $zipUrl = ([string]$Raw.zipUrl -replace '[\x00-\x1F\x7F]', '').Trim() }
-    $zipLooksValid = ($zipUrl -match '^(https?|file)://') -or ($zipUrl -match '^[A-Za-z]:\\' -or $zipUrl -match '^\\\\')
-    if (-not $zipLooksValid) {
-        $result.Error = "поле zipUrl не похоже на ссылку или путь к ZIP: '$zipUrl'"
+    if (-not (Test-ZapretUpdateZipUrl -Url $zipUrl)) {
+        $result.Error = "поле zipUrl должно быть ссылкой https://github.com/Orlovsky1504/OpenZapret/releases/download/<тег>/<файл>.zip: '$zipUrl'"
         return [pscustomobject]$result
     }
 
@@ -625,6 +638,10 @@ function Install-ZapretUpdate {
         $result.Error = 'Манифест неполный: нужны version, zipUrl и sha256.'
         return [pscustomobject]$result
     }
+    if (-not (Test-ZapretUpdateZipUrl -Url ([string]$Manifest.ZipUrl))) {
+        $result.Error = 'Источник ZIP не разрешён: допустимы только релизы https://github.com/Orlovsky1504/OpenZapret/releases/download/.'
+        return [pscustomobject]$result
+    }
     if (-not $script:OnWindows) {
         $result.Error = 'Автоустановка обновлений поддерживается только в Windows.'
         return [pscustomobject]$result
@@ -646,29 +663,11 @@ function Install-ZapretUpdate {
         }
         $hash = (Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash.ToUpperInvariant()
         if ($hash -ne $Manifest.Sha256.ToUpperInvariant()) {
+            # Никакого запасного пути: SHA256SUMS.txt лежит рядом с ZIP в том же релизе, и тот, кто
+            # подменил ZIP, подменил бы и его. Доверяем только хешу из манифеста.
             Write-Log "Update sha mismatch: manifest=$($Manifest.Sha256) file=$hash url=$($Manifest.ZipUrl)" 'WARN'
-            # fallback: CI пересобирает ZIP с детерминированными таймстампами — хеш отличается от локального.
-            # SHA256SUMS.txt рядом с релизом — истина. Если файл совпал с ним, считаем манифест устаревшим.
-            try {
-                $sumsUrl = ($Manifest.ZipUrl -replace '[^/]+\.zip$','SHA256SUMS.txt')
-                $sumsFile = Join-Path $workDir 'SHA256SUMS.txt.remote'
-                if (Invoke-Download -Url $sumsUrl -OutFile $sumsFile -TimeoutSec 30 -NoLog) {
-                    $remoteLine = (Get-Content $sumsFile -Raw)
-                    $m = [regex]::Match($remoteLine, '([A-Fa-f0-9]{64})')
-                    if ($m.Success) {
-                        $remote = $m.Groups[1].Value.ToUpperInvariant()
-                        if ($remote -and $remote -eq $hash) {
-                            Write-Log "Update sha fallback matched SHA256SUMS.txt (manifest stale, using SHA256SUMS.txt)" 'WARN'
-                            Write-Host '  [i]  Манифест устарел, но SHA256SUMS.txt совпал — продолжаю установку.' -ForegroundColor Cyan
-                            $Manifest.Sha256 = $remote
-                        }
-                    }
-                }
-            } catch { }
-            if ($hash -ne $Manifest.Sha256.ToUpperInvariant()) {
-                $result.Error = ('Контрольная сумма ZIP не совпала (манифест {0} vs файл {1}). Попробуйте Update-Zapret.bat вручную.' -f $Manifest.Sha256.Substring(0,12), $hash.Substring(0,12))
-                return [pscustomobject]$result
-            }
+            $result.Error = ('Контрольная сумма ZIP не совпала (манифест {0} vs файл {1}). Обновление не установлено.' -f $Manifest.Sha256.Substring(0,12), $hash.Substring(0,12))
+            return [pscustomobject]$result
         }
         Write-Ok 'Контрольная сумма ZIP подтверждена.'
         Write-Log ('Update {0}: sha256 verified, applying via Update-Zapret.ps1' -f $Manifest.Version)

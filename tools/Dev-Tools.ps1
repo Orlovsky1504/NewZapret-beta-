@@ -91,18 +91,11 @@ if ($Action -eq 'build') {
     $sha = ($sums -split '\s+')[0]
     Write-Host $sums -NoNewline
     Write-Ok2 "ZIP $out/zapret-discord-youtube-$targetVer.zip SHA $sha"
-    # update-manifest.json
-    $manifestPath = Join-Path $repoRoot 'update-manifest.json'
-    $manifest = Get-Content $manifestPath -Raw | ConvertFrom-Json
-    $manifest.version = $targetVer
-    $manifest.zipUrl = "https://github.com/Orlovsky1504/OpenZapret/releases/download/$targetVer/zapret-discord-youtube-$targetVer.zip"
-    $manifest.sha256 = $sha.ToLowerInvariant()
-    $manifest.published = Get-Date -Format 'yyyy-MM-dd'
-    $manifest | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $manifestPath -Encoding UTF8
-    Write-Ok2 "update-manifest.json -> $targetVer $sha"
+    # update-manifest.json здесь НЕ трогаем: его публикует release.yml последним шагом, после релиза и сверки хеша ZIP.
+    Write-Ok2 "update-manifest.json не изменён (обновляется релизным workflow)"
     if ($Push) {
         Write-Step "Push bump $targetVer"
-        & git -C $repoRoot add version.txt .service/version.txt tools/zapret-control.rc README.md CHANGELOG.md update-manifest.json .gitattributes tools/Build-Release.ps1 2>&1 | Out-Null
+        & git -C $repoRoot add version.txt .service/version.txt tools/zapret-control.rc README.md CHANGELOG.md .gitattributes tools/Build-Release.ps1 2>&1 | Out-Null
         & git -C $repoRoot commit -m "chore: bump $targetVer dev-tools" 2>&1 | Out-Null
         Write-Host "Commit created. Run: git push && dispatch release.yml tag=$targetVer"
     }
