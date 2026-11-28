@@ -26,7 +26,7 @@ jobs:
           dir assets/screenshots\ci-overview.png | Format-Table Name, Length
           cat assets/screenshots\virustotal-links.html
       - name: Upload proof
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: virustotal-proof
           path: |
